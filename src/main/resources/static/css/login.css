@@ -1,0 +1,34 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    text-align: center;
+}
+.login-container {
+    width: 55%;
+    height: 50%;
+    margin: auto;
+    padding: 20px;
+    font-size: 16px;
+}
+.login-container div:not(:first-child) {
+    margin-top: 12px;
+}
+.login-content input{
+    width: 90%;
+    padding: 10px;
+    font-size: 16px;
+    margin: auto;
+}
+.login-content-trigger button,
+.login-content-trigger a {
+    width: 94%;
+    padding: 8px;
+    font-size: 17px;
+    text-align: center;
+    margin: auto;
+}
+.store-manager-text {
+    font-size: 15px;
+}

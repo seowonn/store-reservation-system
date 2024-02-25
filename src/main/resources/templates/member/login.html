@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>회원 로그인</title>
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+    <h1>회원 로그인</h1>
+    <div class="login-container">
+        <form method="post" action="/member/login">
+            <div class="login-content">
+                <label>
+                    <input type="text" name="username" placeholder="아이디(이메일)" required/>
+                </label>
+            </div>
+            <div class="login-content">
+                <label>
+                    <input type="password" name="password" placeholder="비밀번호(8자이상)" required/>
+                </label>
+            </div>
+            <div style="text-align: right">
+                <a href="#">아이디∙비밀번호 찾기</a>
+            </div>
+            <div class="login-content-trigger">
+                <button type="submit"> 로그인 </button>
+            </div>
+            <div class="login-content-trigger">
+                <a href="#">회원 가입</a>
+            </div>
+        </form>
+        <div class="store-manager-text">
+            매장의 점장이신가요?<br>
+            매장 관리자 전용 <a href="#">회원가입</a>
+        </div>
+    </div>
+</body>
+</html>
