@@ -10,6 +10,7 @@ public enum ErrorCode {
     UNREGISTERED_USER("등록되지 않은 회원입니다. 회원가입을 진행해주세요."),
     UNMATCHED_PASSWORD("일치하지 않는 비밀번호입니다."),
     UNAUTHORIZED_USER("인증되지 않은 사용자입니다. 로그인을 진행해 주세요."),
+    ALREADY_REGISTERED_STORE("이미 등록된 매장입니다."),
     INVALID_SERVER_ERROR("내부 서버 오류가 발생하였습니다.");
 
     private final String description;

@@ -41,17 +41,16 @@ public class OwnerServiceImpl implements OwnerService {
                 .password(encPassword)
                 .createdAt(LocalDateTime.now())
                 .build();
-        System.out.println(registrationDto.getOwnerId());
 
         // 3. 가입 성공한 Owner 객체 반환
         return ownerRepository.save(owner);
     }
 
     @Override
-    public Owner login(LoginInput loginInput) {
+    public void login(LoginInput loginInput) {
         // 1. 로그인을 시도한 점주가 기존 회원인지 체크
         Optional<Owner> optionalOwner =
-                ownerRepository.findById(loginInput.getMemberId());
+                ownerRepository.findById(loginInput.getUserId());
 
         if(optionalOwner.isEmpty()) {
             throw new ReservationSystemException(UNREGISTERED_USER);
@@ -64,6 +63,17 @@ public class OwnerServiceImpl implements OwnerService {
         }
 
         // 3. 로그인 성공한 객체를 반환
-        return optionalOwner.get();
+        optionalOwner.get();
+    }
+
+    @Override
+    public Owner updateOwner() {
+        return null;
+    }
+
+    @Override
+    public boolean deleteOwner(LoginInput loginInput) {
+        ownerRepository.deleteById(loginInput.getUserId());
+        return true;
     }
 }

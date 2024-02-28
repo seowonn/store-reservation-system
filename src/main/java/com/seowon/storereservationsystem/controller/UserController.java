@@ -5,9 +5,12 @@ import com.seowon.storereservationsystem.dto.UserRegistrationDto;
 import com.seowon.storereservationsystem.entity.User;
 import com.seowon.storereservationsystem.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,11 +27,7 @@ public class UserController {
     }
 
     // 사용자 로그인
-//    @GetMapping("/user/login")
-//    public String login() {
-//        return "/owner/login";
-//    }
-
+    // Spring Security 가 가로채서 검증함.
     @PostMapping("/user/login")
     public ResponseEntity<?> login(
             @RequestBody LoginInput loginInput) {
@@ -36,17 +35,17 @@ public class UserController {
         return ResponseEntity.ok("로그인에 성공하였습니다.");
     }
 
+    @GetMapping("/user/aa")
+    public ResponseEntity<?> user(
+            @AuthenticationPrincipal UserDetails userDetails
+    ){
+        return new ResponseEntity<>(userDetails.getUsername(), HttpStatus.OK);
+    }
+
     // 사용자의 개인 정보 조회
-    // 세션.. 토큰..이 필요한 부분
     @GetMapping("/user/profile")
-    public ResponseEntity<?> userProfile() {
-        Authentication authentication =
-                SecurityContextHolder.getContext().getAuthentication();
-        String currentUserName = authentication.getName();
-        Object principal = authentication.getPrincipal();
-        System.out.println(currentUserName);
-        // 사용자 정보를 기반으로 필요한 로직 처리
-        return null;
+    public ResponseEntity<?> userProfile(@AuthenticationPrincipal UserDetails auserDetails) {
+        return ResponseEntity.ok(null);
     }
 
     // 사용자의 개인 정보 변경

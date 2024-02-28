@@ -2,8 +2,11 @@ package com.seowon.storereservationsystem.controller;
 
 import com.seowon.storereservationsystem.dto.LoginInput;
 import com.seowon.storereservationsystem.dto.OwnerRegistrationDto;
+import com.seowon.storereservationsystem.dto.StoreRegistrationDto;
 import com.seowon.storereservationsystem.entity.Owner;
+import com.seowon.storereservationsystem.entity.Store;
 import com.seowon.storereservationsystem.service.OwnerService;
+import com.seowon.storereservationsystem.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -14,8 +17,11 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class OwnerController {
     private final OwnerService ownerService;
+    private final StoreService storeService;
 
-    // 점주의 회원가입
+    /**
+     * 점주의 회원가입
+     */
     @PostMapping("/owner/register")
     public ResponseEntity<?> register(
             @RequestBody OwnerRegistrationDto registrationDto) {
@@ -23,12 +29,9 @@ public class OwnerController {
         return ResponseEntity.ok(owner);
     }
 
-    // 점주 로그인
-//    @GetMapping("/owner/login")
-//    public String login() {
-//        return "/owner/login";
-//    }
-
+    /**
+     * 점주 로그인
+     */
     @PostMapping("/owner/login")
     public ResponseEntity<?> login(
             @RequestBody LoginInput loginInput) {
@@ -48,29 +51,20 @@ public class OwnerController {
         return null;
     }
 
-    // 점주의 개인 정보 변경
-    // 세션.. 토큰..이 필요한 부분
-    @PutMapping("/owner/update-user")
-    public ResponseEntity<?> updateUser(
-            @RequestBody OwnerRegistrationDto registrationDto) {
-        Owner owner = ownerService.register(registrationDto);
-        return ResponseEntity.ok(owner);
-    }
-
     // 점주의 회원 탈퇴
     @DeleteMapping("/owner/resign")
     public ResponseEntity<?> resign(
-            @RequestBody OwnerRegistrationDto registrationDto) {
-        Owner owner = ownerService.register(registrationDto);
-        return ResponseEntity.ok(owner);
+            @RequestBody LoginInput loginInput) {
+        boolean deleted = ownerService.deleteOwner(loginInput);
+        return ResponseEntity.ok("회원 탈퇴를 완료하였습니다.");
     }
 
     // 점주의 매장 생성 (Create)
     @GetMapping("/owner/addStore")
     public ResponseEntity<?> addStore(
-            @RequestBody OwnerRegistrationDto registrationDto) {
-        Owner owner = ownerService.register(registrationDto);
-        return ResponseEntity.ok(owner);
+            @RequestBody StoreRegistrationDto registrationDto) {
+        Store store = storeService.registerStore(registrationDto);
+        return ResponseEntity.ok(store);
     }
 
     // 점주의 매장 목록 보기 (Read)

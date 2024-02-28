@@ -11,8 +11,10 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
-import static com.seowon.storereservationsystem.type.ErrorCode.ALREADY_REGISTERED_USER;
+import static com.seowon.storereservationsystem.type.ErrorCode.*;
+import static com.seowon.storereservationsystem.type.ErrorCode.UNMATCHED_PASSWORD;
 
 @Service
 @RequiredArgsConstructor
@@ -47,6 +49,30 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User login(LoginInput loginInput) {
-        return null;
+        // 1. 로그인을 시도한 점주가 기존 회원인지 체크
+        Optional<User> optionalUser =
+                userRepository.findById(loginInput.getUserId());
+
+        if(optionalUser.isEmpty()) {
+            throw new ReservationSystemException(UNREGISTERED_USER);
+        }
+
+        // 2. 입력한 비밀번호와 저장된 비밀번호가 일치하는지 확인
+        if (!BCrypt.checkpw(loginInput.getPassword(),
+                optionalUser.get().getPassword())) {
+            throw new ReservationSystemException(UNMATCHED_PASSWORD);
+        }
+
+        // 3. 로그인 성공한 객체를 반환
+        return optionalUser.get();
+    }
+
+    @Override
+    public User getUserInfo(String userId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) {
+            throw new ReservationSystemException(INVALID_SERVER_ERROR);
+        }
+        return optionalUser.get();
     }
 }
