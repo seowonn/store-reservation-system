@@ -1,14 +1,15 @@
 package com.seowon.storereservationsystem.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import com.seowon.storereservationsystem.type.Role;
+import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Collections;
 
 @Entity
 @NoArgsConstructor
@@ -34,9 +35,14 @@ public class User implements UserDetails {
 
     private LocalDateTime updatedAt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return Collections.singletonList(
+                new SimpleGrantedAuthority(role.name()));
     }
 
     @Override
@@ -46,21 +52,21 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true; // 계정 만료 여부를 나타냄, 필요에 따라 로직 변경 가능
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true; // 계정 잠김 여부를 나타냄, 필요에 따라 로직 변경 가능
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true; // 인증 정보 만료 여부를 나타냄, 필요에 따라 로직 변경 가능
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true; // 계정 활성화 여부를 나타냄, 필요에 따라 로직 변경 가능
     }
 }
