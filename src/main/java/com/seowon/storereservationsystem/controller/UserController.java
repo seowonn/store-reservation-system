@@ -1,16 +1,17 @@
 package com.seowon.storereservationsystem.controller;
 
-import com.seowon.storereservationsystem.dto.LoginInput;
 import com.seowon.storereservationsystem.dto.UserRegistrationDto;
 import com.seowon.storereservationsystem.entity.User;
+import com.seowon.storereservationsystem.exception.ReservationSystemException;
 import com.seowon.storereservationsystem.service.UserService;
+import com.seowon.storereservationsystem.type.ErrorCode;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
 
-    // 사용자의 회원가입
     @PostMapping("/user/register")
     public ResponseEntity<?> register(
             @RequestBody UserRegistrationDto registrationDto) {
@@ -26,13 +26,19 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    // 사용자 로그인
-    // Spring Security 가 가로채서 검증함.
-    @PostMapping("/user/login")
-    public ResponseEntity<?> login(
-            @RequestBody LoginInput loginInput) {
-        userService.login(loginInput);
-        return ResponseEntity.ok("로그인에 성공하였습니다.");
+
+    /**
+     사용자 로그인
+     Spring Security 가 가로채서 대신 검증함.
+     **/
+    @GetMapping("/user/login")
+    public String showUserLoginPage() {
+        return "userLogin";
+    }
+
+    @GetMapping("/user/login-success")
+    public String userLoginSuccess() {
+        return "login Success";
     }
 
     @GetMapping("/user/aa")

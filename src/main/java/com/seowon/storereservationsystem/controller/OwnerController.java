@@ -5,12 +5,17 @@ import com.seowon.storereservationsystem.dto.OwnerRegistrationDto;
 import com.seowon.storereservationsystem.dto.StoreRegistrationDto;
 import com.seowon.storereservationsystem.entity.Owner;
 import com.seowon.storereservationsystem.entity.Store;
+import com.seowon.storereservationsystem.exception.ReservationSystemException;
 import com.seowon.storereservationsystem.service.OwnerService;
 import com.seowon.storereservationsystem.service.StoreService;
+import com.seowon.storereservationsystem.type.ErrorCode;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,9 +24,6 @@ public class OwnerController {
     private final OwnerService ownerService;
     private final StoreService storeService;
 
-    /**
-     * 점주의 회원가입
-     */
     @PostMapping("/owner/register")
     public ResponseEntity<?> register(
             @RequestBody OwnerRegistrationDto registrationDto) {
@@ -29,17 +31,18 @@ public class OwnerController {
         return ResponseEntity.ok(owner);
     }
 
-    /**
-     * 점주 로그인
-     */
-    @PostMapping("/owner/login")
-    public ResponseEntity<?> login(
-            @RequestBody LoginInput loginInput) {
-        ownerService.login(loginInput);
-        return ResponseEntity.ok("로그인에 성공하였습니다.");
+    @GetMapping("/owner/login")
+    public String showOwnerLoginPage() {
+        return "ownerLogin"; // ownerLogin.html을 렌더링
     }
 
-    // 점주의 개인 정보 조회
+
+    @GetMapping("/owner/login-success")
+    public String ownerLoginSuccess() {
+        return "login Success";
+    }
+
+        // 점주의 개인 정보 조회
     // 세션.. 토큰..이 필요한 부분
     @GetMapping("/owner/profile")
     public ResponseEntity<?> userProfile() {
