@@ -11,11 +11,13 @@ import java.util.Collection;
 import java.util.Collections;
 
 @Entity
+@Setter
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
-@Setter
 public class User extends BaseEntity implements UserDetails {
     @Id
     private String userId;
