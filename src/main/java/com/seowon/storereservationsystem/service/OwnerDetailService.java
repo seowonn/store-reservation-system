@@ -23,7 +23,7 @@ public class OwnerDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         System.out.println(username);
-        Owner owner = ownerRepository.findById(username).orElseThrow(() ->
+        Owner owner = ownerRepository.findByOwnerId(username).orElseThrow(() ->
                 new UsernameNotFoundException("Owner not found with username: " + username));
 
         return new org.springframework.security.core.userdetails.User(

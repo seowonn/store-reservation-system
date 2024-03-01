@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface OwnerRepository extends JpaRepository<Owner, String> {
-    Optional<Owner> findByOwnerIdAndStoreName(String id, String storeName);
+public interface OwnerRepository extends JpaRepository<Owner, Long> {
+    Optional<Owner> findByOwnerId(String ownerId);
+
+    void deleteByOwnerId(String ownerId);
 }

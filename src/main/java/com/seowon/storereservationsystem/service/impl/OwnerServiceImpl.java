@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static com.seowon.storereservationsystem.entity.Owner.*;
 import static com.seowon.storereservationsystem.type.ErrorCode.*;
@@ -25,9 +26,10 @@ public class OwnerServiceImpl implements OwnerService {
     @Override
     public Owner register(OwnerRegistrationDto registrationDto) {
         // 1. 이 회원이 이미 가입된 사람인지 확인
-        boolean exists =
-                ownerRepository.existsById(registrationDto.getOwnerId());
-        if (exists) {
+        Optional<Owner> byOwnerId =
+                ownerRepository.findByOwnerId(registrationDto.getOwnerId());
+
+        if(byOwnerId.isPresent()){
             throw new ReservationSystemException(ALREADY_REGISTERED_USER);
         }
 
@@ -54,7 +56,7 @@ public class OwnerServiceImpl implements OwnerService {
 
     @Override
     public boolean deleteOwner(LoginInput loginInput) {
-        ownerRepository.deleteById(loginInput.getUserId());
+        ownerRepository.deleteByOwnerId(loginInput.getUserId());
         return true;
     }
 }
