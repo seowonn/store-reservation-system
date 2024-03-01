@@ -5,6 +5,7 @@ import com.seowon.storereservationsystem.entity.Owner;
 import com.seowon.storereservationsystem.entity.Store;
 import com.seowon.storereservationsystem.exception.ReservationSystemException;
 import com.seowon.storereservationsystem.repository.OwnerRepository;
+import com.seowon.storereservationsystem.repository.StoreRepository;
 import com.seowon.storereservationsystem.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,27 +19,33 @@ import static com.seowon.storereservationsystem.type.ErrorCode.UNREGISTERED_USER
 @Service
 @RequiredArgsConstructor
 public class StoreServiceImpl implements StoreService {
+    private final StoreRepository storeRepository;
     private final OwnerRepository ownerRepository;
     @Override
     public Store registerStore(StoreRegistrationDto registrationDto) {
-        Optional<Owner> optionalOwner =
-                ownerRepository.findById(registrationDto.getOwnerId());
-        if(optionalOwner.isEmpty()) {
-            throw new ReservationSystemException(UNREGISTERED_USER);
-        }
+        // Owner 조회
+        Owner owner = ownerRepository.findByOwnerId(registrationDto.getOwnerId())
+                .orElseThrow(() ->
+                        new ReservationSystemException(UNREGISTERED_USER)
+                );
 
-        Optional<Owner> optional = ownerRepository.findByOwnerIdAndStoreName(
-                registrationDto.getOwnerId(), registrationDto.getStoreName());
-        if(optional.isEmpty()) {
+        // 동일한 Owner ID와 매장 이름으로 등록된 매장이 있는지 확인
+        Optional<Store> optionalStore = storeRepository.findByOwnerAndStoreName(
+                owner, registrationDto.getStoreName());
+        if(optionalStore.isPresent()){
             throw new ReservationSystemException(ALREADY_REGISTERED_STORE);
         }
 
-        return Store.builder()
+        // 매장 등록
+        Store store = Store.builder()
                 .storeName(registrationDto.getStoreName())
-                .phone(registrationDto.getPhone())
-                .ownerId(registrationDto.getOwnerId())
+                .storePhoneNumber(registrationDto.getStorePhoneNumber())
+                .storeLocation(registrationDto.getStoreLocation())
+                .storeDescription(registrationDto.getStoreDescription())
                 .seatingCapacity(registrationDto.getSeatingCapacity())
-                .regAt(LocalDateTime.now())
+                .owner(owner)
                 .build();
+
+        return storeRepository.save(store);
     }
 }

@@ -10,6 +10,8 @@ import lombok.*;
 public class StoreRegistrationDto {
     private String ownerId;
     private String storeName;
-    private String phone;
     private Integer seatingCapacity;
+    private String storePhoneNumber;
+    private String storeLocation;
+    private String storeDescription;
 }
