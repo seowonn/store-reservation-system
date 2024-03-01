@@ -2,7 +2,10 @@ package com.seowon.storereservationsystem.entity;
 
 import com.seowon.storereservationsystem.type.Role;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,12 +15,9 @@ import java.util.Collections;
 
 @Entity
 @Getter
-@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
 public class Owner extends BaseEntity implements UserDetails  {
     @Id
     private String ownerId;
