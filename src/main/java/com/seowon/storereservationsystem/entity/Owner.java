@@ -2,42 +2,36 @@ package com.seowon.storereservationsystem.entity;
 
 import com.seowon.storereservationsystem.type.Role;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Owner implements UserDetails {
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+public class Owner extends BaseEntity implements UserDetails  {
     @Id
     private String ownerId;
 
+    private String storeName;
+
     @Column(nullable = false)
     private String name;
-
-    private String storeName;
 
     @Column(nullable = false)
     private String phone;
 
     @Column(nullable = false)
     private String password;
-
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

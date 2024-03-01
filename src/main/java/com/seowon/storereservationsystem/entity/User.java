@@ -7,7 +7,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -17,7 +16,7 @@ import java.util.Collections;
 @Builder
 @Getter
 @Setter
-public class User implements UserDetails {
+public class User extends BaseEntity implements UserDetails {
     @Id
     private String userId;
 
@@ -29,11 +28,6 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     private String password;
-
-    @Column(nullable = false)
-    private LocalDateTime regAt;
-
-    private LocalDateTime updatedAt;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

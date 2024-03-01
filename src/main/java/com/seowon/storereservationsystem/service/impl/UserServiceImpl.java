@@ -39,7 +39,6 @@ public class UserServiceImpl implements UserService {
                 .name(registrationDto.getName())
                 .phone(registrationDto.getPhone())
                 .password(encPassword)
-                .regAt(LocalDateTime.now())
                 .role(Role.USER)
                 .build();
 
