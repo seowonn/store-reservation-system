@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+import static com.seowon.storereservationsystem.entity.Owner.*;
 import static com.seowon.storereservationsystem.type.ErrorCode.*;
 
 @Service
@@ -34,12 +35,11 @@ public class OwnerServiceImpl implements OwnerService {
         String encPassword =
                 BCrypt.hashpw(registrationDto.getPassword(), BCrypt.gensalt());
 
-        Owner owner = Owner.builder()
+        Owner owner = builder()
                 .ownerId(registrationDto.getOwnerId())
                 .name(registrationDto.getOwnerName())
                 .phone(registrationDto.getPhone())
                 .password(encPassword)
-                .createdAt(LocalDateTime.now())
                 .role(Role.OWNER)
                 .build();
 

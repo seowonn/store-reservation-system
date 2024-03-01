@@ -10,7 +10,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -19,25 +18,20 @@ import java.util.Collections;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Owner implements UserDetails {
+public class Owner extends BaseEntity implements UserDetails  {
     @Id
     private String ownerId;
 
+    private String storeName;
+
     @Column(nullable = false)
     private String name;
-
-    private String storeName;
 
     @Column(nullable = false)
     private String phone;
 
     @Column(nullable = false)
     private String password;
-
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
