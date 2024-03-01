@@ -7,8 +7,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Entity
 @Getter
@@ -19,10 +21,8 @@ import java.util.Collections;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Owner extends BaseEntity implements UserDetails  {
-    @Id
+    @Column(nullable = false)
     private String ownerId;
-
-    private String storeName;
 
     @Column(nullable = false)
     private String name;
@@ -36,6 +36,11 @@ public class Owner extends BaseEntity implements UserDetails  {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
+    @ToString.Exclude
+    @Builder.Default
+    private List<Store> storeList = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

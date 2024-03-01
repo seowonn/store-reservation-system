@@ -1,26 +1,31 @@
 package com.seowon.storereservationsystem.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Entity
+@Getter
+@Setter
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
-@Getter
-@Builder
-public class Store {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Store extends BaseEntity{
+    @Column(nullable = false)
     private String storeName;
-    private String ownerId;
+
     private Integer seatingCapacity;
-    private String phone;
-    private LocalDateTime regAt;
+
+    @Column(nullable = false)
+    private String storePhoneNumber;
+
+    @Column(nullable = false)
+    private String storeLocation;
+
+    private String storeDescription;
+
+    @ManyToOne
+    @JoinColumn(name = "owner")
+    private Owner owner;
 }
