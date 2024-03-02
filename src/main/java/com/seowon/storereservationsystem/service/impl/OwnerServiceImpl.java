@@ -11,11 +11,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static com.seowon.storereservationsystem.entity.Owner.*;
-import static com.seowon.storereservationsystem.type.ErrorCode.*;
+import static com.seowon.storereservationsystem.entity.Owner.builder;
+import static com.seowon.storereservationsystem.type.ErrorCode.ALREADY_REGISTERED_USER;
+import static com.seowon.storereservationsystem.type.ErrorCode.UNREGISTERED_USER;
 
 @Service
 @RequiredArgsConstructor
@@ -50,13 +50,25 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
+    public Owner selectOwnerProfile(String ownerId) {
+        Owner foundOwner = ownerRepository.findByOwnerId(ownerId)
+                .orElseThrow(() ->
+                        new ReservationSystemException(UNREGISTERED_USER));
+        return Owner.builder()
+                .name(foundOwner.getName())
+                .phone(foundOwner.getPhone())
+                .ownerId(foundOwner.getOwnerId())
+                .password(foundOwner.getPassword())
+                .build();
+    }
+
+    @Override
     public Owner updateOwner() {
         return null;
     }
 
     @Override
-    public boolean deleteOwner(LoginInput loginInput) {
-        ownerRepository.deleteByOwnerId(loginInput.getUserId());
-        return true;
+    public void deleteOwner(LoginInput loginInput) {
+        ownerRepository.deleteByOwnerId(loginInput.getUserId());;
     }
 }

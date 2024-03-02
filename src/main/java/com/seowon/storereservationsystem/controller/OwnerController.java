@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.*;
 public class OwnerController {
     private final OwnerService ownerService;
 
+    /**
+     * 점주의 회원가입
+     * @RequestBody registrationDto
+     */
     @PostMapping("/register")
     public ResponseEntity<?> register(
             @RequestBody OwnerRegistrationDto registrationDto) {
@@ -23,28 +27,25 @@ public class OwnerController {
         return ResponseEntity.ok(owner);
     }
 
-    @GetMapping("/login")
-    public String showOwnerLoginPage() {
-        return "ownerLogin";
-    }
-
-        // 점주의 개인 정보 조회
-    // 세션.. 토큰..이 필요한 부분
+    /**
+     * 점주의 등록 정보 조회
+     */
     @GetMapping("/profile")
-    public ResponseEntity<?> userProfile() {
+    public ResponseEntity<?> showOwnerProfile() {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
-        String currentUserName = authentication.getName();
-        System.out.println(currentUserName);
-        // 사용자 정보를 기반으로 필요한 로직 처리
-        return null;
+        Owner owner = ownerService.selectOwnerProfile(authentication.getName());
+        return ResponseEntity.ok(owner);
     }
 
-    // 점주의 회원 탈퇴
+    /**
+     * 점주의 회원 탈퇴
+     * @RequestBody loginInput
+     */
     @DeleteMapping("/resign")
     public ResponseEntity<?> resign(
             @RequestBody LoginInput loginInput) {
-        boolean deleted = ownerService.deleteOwner(loginInput);
+        ownerService.deleteOwner(loginInput);
         return ResponseEntity.ok("회원 탈퇴를 완료하였습니다.");
     }
 }
