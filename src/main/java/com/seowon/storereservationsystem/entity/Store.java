@@ -25,7 +25,7 @@ public class Store extends BaseEntity{
 
     private String storeDescription;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner")
     private Owner owner;
 }

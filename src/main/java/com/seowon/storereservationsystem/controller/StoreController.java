@@ -10,6 +10,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/owner/store")
@@ -18,8 +20,7 @@ public class StoreController {
 
     /**
      * 점주의 매장 생성
-     * @param registrationDto
-     * @return
+     * @RequestBody registrationDto
      */
     @PostMapping("/add")
     public ResponseEntity<?> addStore(
@@ -32,18 +33,16 @@ public class StoreController {
         return ResponseEntity.ok(store);
     }
 
-    // 점주의 매장 목록 보기 (Read)
-
     /**
-     * 특정 칼럼만 추출하는 쿼리
-     *
-     * @Query("SELECT p.name, p.price FROM Product p WHERE p.name = :name")
-     * List<Object[]> findByNameParam(@Param("name") String name);
+     *  점주가 등록한 매장 조회
      */
-    @PostMapping("/list")
-    public ResponseEntity<?> showStoreList(
-            @RequestBody OwnerRegistrationDto registrationDto) {
-        return null;
+    @GetMapping("/store-list")
+    public ResponseEntity<List<String>> getStoreList() {
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        List<String> store = storeService.selectStores(authentication.getName());
+        return ResponseEntity.ok(store);
     }
 
     // 점주의 매장 정보 갱신 (Update)

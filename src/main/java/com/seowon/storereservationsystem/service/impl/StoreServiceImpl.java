@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static com.seowon.storereservationsystem.type.ErrorCode.ALREADY_REGISTERED_STORE;
@@ -47,5 +48,13 @@ public class StoreServiceImpl implements StoreService {
                 .build();
 
         return storeRepository.save(store);
+    }
+
+    @Override
+    public List<String> selectStores(String ownerId) {
+        Owner owner = ownerRepository.findByOwnerId(ownerId)
+                .orElseThrow(() -> new ReservationSystemException(UNREGISTERED_USER));
+        return storeRepository
+                .findStoreNamesByOwnerId(owner.getId());
     }
 }
