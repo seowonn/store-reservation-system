@@ -45,11 +45,17 @@ public class OwnerSecurityConfiguration {
     public SecurityFilterChain ownerFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
+                .exceptionHandling(exceptionHandling ->
+                        exceptionHandling
+                                .authenticationEntryPoint(
+                                        new CustomAuthenticationEntryPoint())
+                )
                 .authorizeHttpRequests(authorizeRequests -> {
                     authorizeRequests
                             .requestMatchers("/owner/register",
                                     "/owner/login", "/error/login-fail",
-                                    "/logout-success", "/error")
+                                    "/logout-success", "/login-success",
+                                    "/error")
                             .permitAll();
                     authorizeRequests.
                             requestMatchers("/owner/**").authenticated();
@@ -62,7 +68,7 @@ public class OwnerSecurityConfiguration {
                         .loginPage("/owner/login")
                         .failureHandler(new LoginFailureHandler())
                         .loginProcessingUrl("/owner/login")
-                        .defaultSuccessUrl("/owner/login-success")
+                        .defaultSuccessUrl("/login-success")
                         .permitAll()
                 )
                 .logout(logout -> logout

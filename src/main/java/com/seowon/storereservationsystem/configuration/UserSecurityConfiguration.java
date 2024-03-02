@@ -15,9 +15,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-@Order(1)
-@Configuration
-@EnableWebSecurity
+//@Order(1)
+//@Configuration
+//@EnableWebSecurity
 public class UserSecurityConfiguration {
 
 
@@ -48,7 +48,8 @@ public class UserSecurityConfiguration {
                     authorizeRequests
                             .requestMatchers("/user/register",
                                     "/user/login", "/error/login-fail",
-                                    "/logout-success", "/error")
+                                    "/logout-success", "/login-success",
+                                    "/error")
                             .permitAll();
                     authorizeRequests.
                             requestMatchers("/user/**").authenticated();
@@ -61,7 +62,7 @@ public class UserSecurityConfiguration {
                         .loginPage("/user/login")
                         .failureHandler(new LoginFailureHandler())
                         .loginProcessingUrl("/user/login")
-                        .defaultSuccessUrl("/user/login-success")
+                        .defaultSuccessUrl("/login-success")
                         .permitAll()
                 )
                 .logout(logout -> logout

@@ -37,7 +37,7 @@ public class AuthController {
     @GetMapping("/logout-success")
     public String LogoutSuccess() {return "logout Success";}
 
-    @PostMapping("/error")
+    @GetMapping("/error")
     public ResponseEntity<?> error() {
         ErrorResponseDto responseDto =
                 new ErrorResponseDto(UNREGISTERED_USER,
