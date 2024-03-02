@@ -30,6 +30,6 @@ public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
         }
 
         request.getSession().setAttribute("error", errorCode);
-        response.sendRedirect("/error/login-fail");
+        response.sendRedirect("/login-fail");
     }
 }

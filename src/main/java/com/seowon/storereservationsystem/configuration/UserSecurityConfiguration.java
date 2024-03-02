@@ -47,7 +47,7 @@ public class UserSecurityConfiguration {
                 .authorizeHttpRequests(authorizeRequests -> {
                     authorizeRequests
                             .requestMatchers("/user/register",
-                                    "/user/login", "/error/login-fail",
+                                    "/user/login", "/login-fail",
                                     "/logout-success", "/login-success",
                                     "/error")
                             .permitAll();

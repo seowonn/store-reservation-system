@@ -6,21 +6,16 @@ import com.seowon.storereservationsystem.type.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpClientErrorException;
 
 import static com.seowon.storereservationsystem.type.ErrorCode.UNAUTHORIZED_USER;
 import static com.seowon.storereservationsystem.type.ErrorCode.UNREGISTERED_USER;
 
 @RestController
 public class AuthController {
-    @GetMapping("/error/login-fail")
-    public void LoginFail(
-            HttpServletRequest request, Model model
-    ) {
+    @GetMapping("/login-fail")
+    public void LoginFail(HttpServletRequest request) {
         Object error =
                 request.getSession().getAttribute("error");
 
@@ -30,12 +25,13 @@ public class AuthController {
     }
 
     @GetMapping("/login-success")
-    public String LoginSuccess() {
-        return "login Success";
+    public ResponseEntity<?> LoginSuccess() {
+        return ResponseEntity.ok("로그인에 성공하였습니다.");
     }
 
     @GetMapping("/logout-success")
-    public String LogoutSuccess() {return "logout Success";}
+    public ResponseEntity<?>  LogoutSuccess() {
+        return ResponseEntity.ok("로그아웃에 성공하였습니다.");}
 
     @GetMapping("/error")
     public ResponseEntity<?> error() {
