@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-import static com.seowon.storereservationsystem.entity.Owner.builder;
 import static com.seowon.storereservationsystem.type.ErrorCode.ALREADY_REGISTERED_USER;
 import static com.seowon.storereservationsystem.type.ErrorCode.UNREGISTERED_USER;
 
@@ -37,7 +36,7 @@ public class OwnerServiceImpl implements OwnerService {
         String encPassword =
                 BCrypt.hashpw(registrationDto.getPassword(), BCrypt.gensalt());
 
-        Owner owner = builder()
+        Owner owner = Owner.builder()
                 .ownerId(registrationDto.getOwnerId())
                 .name(registrationDto.getOwnerName())
                 .phone(registrationDto.getPhone())
