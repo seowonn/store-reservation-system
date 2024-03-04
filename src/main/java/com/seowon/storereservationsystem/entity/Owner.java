@@ -1,5 +1,6 @@
 package com.seowon.storereservationsystem.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.seowon.storereservationsystem.type.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -40,6 +41,7 @@ public class Owner extends BaseEntity implements UserDetails  {
     @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
     @ToString.Exclude
     @Builder.Default
+    @JsonManagedReference
     private List<Store> storeList = new ArrayList<>();
 
     @Override

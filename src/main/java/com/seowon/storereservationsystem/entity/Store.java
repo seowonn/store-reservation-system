@@ -1,5 +1,6 @@
 package com.seowon.storereservationsystem.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,9 +24,11 @@ public class Store extends BaseEntity{
     @Column(nullable = false)
     private String storeLocation;
 
+    @Column(columnDefinition = "LONGTEXT")
     private String storeDescription;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner")
+    @JsonBackReference
     private Owner owner;
 }
