@@ -9,6 +9,5 @@ import java.util.Optional;
 @Repository
 public interface OwnerRepository extends JpaRepository<Owner, Long> {
     Optional<Owner> findByOwnerId(String ownerId);
-
     void deleteByOwnerId(String ownerId);
 }

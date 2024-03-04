@@ -20,6 +20,7 @@ public class StoreControllerForUser {
      * 추가해볼 것 : 사용자 현 위치 + 매장 위치 계산 가까운 매장 n개 조회
      * 등록된 모든 매장 조회 기능
      * 대용량 데이터에 더 적합한 Pageable 이용
+     * @Pageable size
      */
     @GetMapping("/search-whole")
     public ResponseEntity<?> searchStores(final Pageable pageable) {

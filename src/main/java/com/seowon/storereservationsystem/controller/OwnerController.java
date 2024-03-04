@@ -28,14 +28,28 @@ public class OwnerController {
     }
 
     /**
-     * 점주의 등록 정보 조회
+     * 점주의 개인 정보 조회
      */
     @GetMapping("/profile")
-    public ResponseEntity<?> showOwnerProfile() {
+    public ResponseEntity<?> getOwner() {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
-        Owner owner = ownerService.selectOwnerProfile(authentication.getName());
-        return ResponseEntity.ok(owner);
+        Owner ownerProfile =
+                ownerService.getOwnerProfile(authentication.getName());
+        return ResponseEntity.ok(ownerProfile);
+    }
+
+    /**
+     * 점주의 개인 정보 변경
+     * @RequestBody registrationDto
+     */
+    @PutMapping("/update")
+    public ResponseEntity<?> updateOwner(
+            @RequestBody OwnerRegistrationDto registrationDto) {
+        String ownerId =
+                SecurityContextHolder.getContext().getAuthentication().getName();
+        ownerService.updateOwner(registrationDto, ownerId);
+        return ResponseEntity.ok(registrationDto);
     }
 
     /**

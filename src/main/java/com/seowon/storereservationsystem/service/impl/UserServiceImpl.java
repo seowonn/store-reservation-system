@@ -1,6 +1,8 @@
 package com.seowon.storereservationsystem.service.impl;
 
+import com.seowon.storereservationsystem.dto.LoginInput;
 import com.seowon.storereservationsystem.dto.UserRegistrationDto;
+import com.seowon.storereservationsystem.entity.Owner;
 import com.seowon.storereservationsystem.entity.User;
 import com.seowon.storereservationsystem.exception.ReservationSystemException;
 import com.seowon.storereservationsystem.repository.UserRepository;
@@ -12,8 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-import static com.seowon.storereservationsystem.type.ErrorCode.ALREADY_REGISTERED_USER;
-import static com.seowon.storereservationsystem.type.ErrorCode.INVALID_SERVER_ERROR;
+import static com.seowon.storereservationsystem.type.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -48,8 +49,35 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserInfo(String userId) {
-        return userRepository.findByUserId(userId)
-                .orElseThrow(() -> new ReservationSystemException(INVALID_SERVER_ERROR));
+    public User getUserProfile(String userId) {
+        User foundUser = userRepository.findByUserId(userId)
+                .orElseThrow(() ->
+                        new ReservationSystemException(UNREGISTERED_USER));
+        return User.builder()
+                .name(foundUser.getName())
+                .phone(foundUser.getPhone())
+                .userId(foundUser.getUserId())
+                .build();
+    }
+
+    @Override
+    public void updateUser(UserRegistrationDto registrationDto, String userId) {
+        User foundUser = userRepository.findByUserId(userId)
+                .orElseThrow(() ->
+                        new ReservationSystemException(UNREGISTERED_USER));
+
+        String encPassword =
+                BCrypt.hashpw(registrationDto.getPassword(), BCrypt.gensalt());
+
+        foundUser.setUserId(registrationDto.getUserId());
+        foundUser.setName(registrationDto.getName());
+        foundUser.setPhone(registrationDto.getPhone());
+        foundUser.setPassword(encPassword);
+        userRepository.save(foundUser);
+    }
+
+    @Override
+    public void deleteUser(LoginInput loginInput) {
+        userRepository.deleteByUserId(loginInput.getUserId());;
     }
 }

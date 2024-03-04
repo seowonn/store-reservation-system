@@ -2,7 +2,9 @@ package com.seowon.storereservationsystem.service.impl;
 
 import com.seowon.storereservationsystem.dto.LoginInput;
 import com.seowon.storereservationsystem.dto.OwnerRegistrationDto;
+import com.seowon.storereservationsystem.dto.UserRegistrationDto;
 import com.seowon.storereservationsystem.entity.Owner;
+import com.seowon.storereservationsystem.entity.User;
 import com.seowon.storereservationsystem.exception.ReservationSystemException;
 import com.seowon.storereservationsystem.repository.OwnerRepository;
 import com.seowon.storereservationsystem.service.OwnerService;
@@ -49,7 +51,7 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
-    public Owner selectOwnerProfile(String ownerId) {
+    public Owner getOwnerProfile(String ownerId) {
         Owner foundOwner = ownerRepository.findByOwnerId(ownerId)
                 .orElseThrow(() ->
                         new ReservationSystemException(UNREGISTERED_USER));
@@ -57,13 +59,23 @@ public class OwnerServiceImpl implements OwnerService {
                 .name(foundOwner.getName())
                 .phone(foundOwner.getPhone())
                 .ownerId(foundOwner.getOwnerId())
-                .password(foundOwner.getPassword())
                 .build();
     }
 
     @Override
-    public Owner updateOwner() {
-        return null;
+    public void updateOwner(OwnerRegistrationDto registrationDto, String ownerId) {
+        Owner foundOwner = ownerRepository.findByOwnerId(ownerId)
+                .orElseThrow(() ->
+                        new ReservationSystemException(UNREGISTERED_USER));
+
+        String encPassword =
+                BCrypt.hashpw(registrationDto.getPassword(), BCrypt.gensalt());
+
+        foundOwner.setOwnerId(registrationDto.getOwnerId());
+        foundOwner.setName(registrationDto.getOwnerName());
+        foundOwner.setPhone(registrationDto.getPhone());
+        foundOwner.setPassword(encPassword);
+        ownerRepository.save(foundOwner);
     }
 
     @Override
