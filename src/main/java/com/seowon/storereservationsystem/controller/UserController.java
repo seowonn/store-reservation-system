@@ -22,16 +22,6 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-
-    /**
-     사용자 로그인
-     Spring Security 가 가로채서 대신 검증함.
-     **/
-    @GetMapping("/login")
-    public String showUserLoginPage() {
-        return "userLogin";
-    }
-
     // 사용자의 개인 정보 조회
     @GetMapping("/profile")
     public ResponseEntity<?> userProfile(@AuthenticationPrincipal UserDetails auserDetails) {
@@ -54,5 +44,4 @@ public class UserController {
         User user = userService.register(registrationDto);
         return ResponseEntity.ok(user);
     }
-
 }

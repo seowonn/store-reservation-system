@@ -15,33 +15,37 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/owner/store")
-public class StoreController {
+public class StoreControllerForOwner {
     private final StoreService storeService;
 
     /**
      * 점주의 매장 생성
+     *
      * @RequestBody registrationDto
      */
     @PostMapping("/add")
     public ResponseEntity<?> addStore(
             @RequestBody StoreRegistrationDto registrationDto) {
-        Authentication authentication =
-                SecurityContextHolder.getContext().getAuthentication();
-        String ownerId = authentication.getName();
+        String ownerId = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getName();
         registrationDto.setOwnerId(ownerId);
         Store store = storeService.registerStore(registrationDto);
+
+        storeService.addAutocompleteKeyword(store.getStoreName());
+
         return ResponseEntity.ok(store);
     }
 
     /**
-     *  점주가 등록한 매장 조회
+     * 점주가 등록한 매장 조회
      */
     @GetMapping("/store-list")
     public ResponseEntity<List<String>> getStoreList() {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
 
-        List<String> store = storeService.selectStores(authentication.getName());
+        List<String> store = storeService.selectOwnersStore(authentication.getName());
         return ResponseEntity.ok(store);
     }
 

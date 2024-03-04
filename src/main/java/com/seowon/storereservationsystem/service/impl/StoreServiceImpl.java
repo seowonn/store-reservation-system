@@ -8,20 +8,25 @@ import com.seowon.storereservationsystem.repository.OwnerRepository;
 import com.seowon.storereservationsystem.repository.StoreRepository;
 import com.seowon.storereservationsystem.service.StoreService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.Trie;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import static com.seowon.storereservationsystem.type.ErrorCode.ALREADY_REGISTERED_STORE;
-import static com.seowon.storereservationsystem.type.ErrorCode.UNREGISTERED_USER;
+import static com.seowon.storereservationsystem.type.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
 public class StoreServiceImpl implements StoreService {
+
     private final StoreRepository storeRepository;
     private final OwnerRepository ownerRepository;
+    private final Trie<String, String> trie;
+
     @Override
     public Store registerStore(StoreRegistrationDto registrationDto) {
         // Owner 조회
@@ -51,10 +56,54 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public List<String> selectStores(String ownerId) {
+    public List<String> selectOwnersStore(String ownerId) {
         Owner owner = ownerRepository.findByOwnerId(ownerId)
                 .orElseThrow(() -> new ReservationSystemException(UNREGISTERED_USER));
         return storeRepository
                 .findStoreNamesByOwnerId(owner.getId());
     }
+
+    @Override
+    public Page<Store> getAllStores(Pageable pageable) {
+        return storeRepository.findAll(pageable);
+    }
+
+    @Override
+    public List<Store> getStoresByStoreName(String storeName) {
+        List<Store> storeList =
+                storeRepository.findByStoreNameContaining(storeName);
+        if(storeList.isEmpty()) {
+            throw new ReservationSystemException(UNREGISTERED_STORE);
+        }
+        return storeList;
+    }
+
+    @Override
+    public void addAutocompleteKeyword(String keyword){
+        trie.put(keyword, null);
+    }
+
+    @Override
+    public List<String> autocomplete(String prefix) {
+        return trie.prefixMap(prefix).keySet()
+                .stream()
+                .limit(10)
+                .map(Object::toString)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteAutocompleteKeyword(String keyword) {
+        trie.remove(keyword);
+    }
+
+    @Override
+    public Store getStoreInfo(Long storeId) {
+        return storeRepository.findById(storeId)
+                .orElseThrow(() ->
+                        new ReservationSystemException(
+                                UNREGISTERED_STORE
+                        ));
+    }
+
 }
