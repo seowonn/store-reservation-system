@@ -69,13 +69,13 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public List<Store> getStoresByStoreName(String storeName) {
-        List<Store> storeList =
-                storeRepository.findByStoreNameContaining(storeName);
-        if(storeList.isEmpty()) {
+    public Page<Store> getStoresByStoreName(String storeName, Pageable pageable) {
+        Page<Store> storePage =
+                storeRepository.findByStoreNameContaining(storeName, pageable);
+        if(storePage.isEmpty()) {
             throw new ReservationSystemException(UNREGISTERED_STORE);
         }
-        return storeList;
+        return storePage;
     }
 
     @Override

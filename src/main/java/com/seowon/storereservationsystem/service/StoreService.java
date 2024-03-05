@@ -11,7 +11,7 @@ public interface StoreService {
     Store registerStore(StoreRegistrationDto registrationDto);
     List<String> selectOwnersStore(String ownerId);
     Page<Store> getAllStores(Pageable pageable);
-    List<Store> getStoresByStoreName(String storeName);
+    Page<Store> getStoresByStoreName(String storeName, Pageable pageable);
     void addAutocompleteKeyword(String keyword);
     List<String> autocomplete(String prefix);
     void deleteAutocompleteKeyword(String keyword);
