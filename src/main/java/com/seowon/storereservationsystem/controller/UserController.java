@@ -18,6 +18,7 @@ public class UserController {
 
     /**
      * 사용자의 회원가입
+     * userId(이메일)로 구분
      * @RequestBody registrationDto
      */
     @PostMapping("/register")

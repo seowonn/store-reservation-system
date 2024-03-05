@@ -80,6 +80,10 @@ public class OwnerServiceImpl implements OwnerService {
 
     @Override
     public void deleteOwner(LoginInput loginInput) {
+        ownerRepository.findByOwnerId(loginInput.getUserId())
+                        .orElseThrow(() -> new ReservationSystemException(
+                                UNREGISTERED_USER
+                        ));
         ownerRepository.deleteByOwnerId(loginInput.getUserId());;
     }
 }
