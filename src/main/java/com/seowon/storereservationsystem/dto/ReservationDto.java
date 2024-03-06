@@ -10,12 +10,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class ReservationDto {
-    private Long storeId;
+    private Long reservationId;
     private String userId;
     private String userName;
     private String phone;
     private String storeName;
     private String reserveTime;
     private int reserveNum;
-    private String reserveResult;
+    private ApiResponse reserveResult;
 }

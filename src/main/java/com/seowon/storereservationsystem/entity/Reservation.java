@@ -21,6 +21,9 @@ public class Reservation extends BaseEntity{
     @Column
     private int reserveNum;
 
+    @Column
+    private boolean checkIn;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store")
     @JsonBackReference

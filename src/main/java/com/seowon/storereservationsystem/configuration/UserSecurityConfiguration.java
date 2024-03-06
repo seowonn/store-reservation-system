@@ -15,9 +15,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-//@Order(1)
-//@Configuration
-//@EnableWebSecurity
+@Order(1)
+@Configuration
+@EnableWebSecurity
 public class UserSecurityConfiguration {
 
 

@@ -12,6 +12,8 @@ public enum ErrorCode {
     UNAUTHORIZED_USER("인증되지 않은 사용자입니다. 로그인을 진행해 주세요."),
     ALREADY_REGISTERED_STORE("이미 등록된 매장입니다."),
     UNREGISTERED_STORE("존재하지 않는 매장입니다."),
+    UNREGISTERED_RESERVATION("예약 내역이 존재하지 않습니다."),
+    EXPIRED_RESERVATION("예약 시간 내에 오지 않아 예약이 취소되었습니다. 다시 예약해주세요."),
     INVALID_SERVER_ERROR("내부 서버 오류가 발생하였습니다.");
 
     private final String description;
