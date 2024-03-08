@@ -2,7 +2,6 @@ package com.seowon.storereservationsystem.service.impl;
 
 import com.seowon.storereservationsystem.dto.LoginInput;
 import com.seowon.storereservationsystem.dto.UserRegistrationDto;
-import com.seowon.storereservationsystem.entity.Owner;
 import com.seowon.storereservationsystem.entity.User;
 import com.seowon.storereservationsystem.exception.ReservationSystemException;
 import com.seowon.storereservationsystem.repository.UserRepository;
