@@ -15,13 +15,13 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     /**
-     * 사용자의 매장 예약 서비스
+     * 사용자의 매장 예약 신청 서비스
      * @PathVariable storeId
      * @RequestBody reservationDto
      * 예약 결과와 예약 번호(reservationId)를 수령하게 된다.
      */
-    @PostMapping("/user/reservation/{storeId}")
-    public ResponseEntity<ReservationDto> reserve(
+    @PostMapping("/user/apply-reservation/{storeId}")
+    public ResponseEntity<ReservationDto> applyReservation(
             @PathVariable Long storeId,
             @RequestBody ReservationDto reservationDto
     ){
@@ -30,7 +30,7 @@ public class ReservationController {
                 .getName();
         reservationDto.setUserId(userId);
         ReservationDto result =
-                reservationService.makeReservation(storeId, reservationDto);
+                reservationService.applyReservation(storeId, reservationDto);
         return ResponseEntity.ok(result);
     }
 
@@ -45,5 +45,4 @@ public class ReservationController {
                 reservationService.checkReservation(reservationId);
         return ResponseEntity.ok(apiResponse);
     }
-
 }

@@ -10,6 +10,7 @@ import com.seowon.storereservationsystem.repository.ReservationRepository;
 import com.seowon.storereservationsystem.repository.StoreRepository;
 import com.seowon.storereservationsystem.repository.UserRepository;
 import com.seowon.storereservationsystem.service.ReservationService;
+import com.seowon.storereservationsystem.type.ReservationStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final StoreRepository storeRepository;
     private final UserRepository userRepository;
     @Override
-    public ReservationDto makeReservation(Long storeId, ReservationDto reservationDto) {
+    public ReservationDto applyReservation(Long storeId, ReservationDto reservationDto) {
 
         User user = userRepository.findByUserId(reservationDto.getUserId())
                 .orElseThrow(() -> new ReservationSystemException(
@@ -44,6 +45,7 @@ public class ReservationServiceImpl implements ReservationService {
                 .reserveTime(convertStringToLocalDateTime(
                         reservationDto.getReserveTime()))
                 .reserveNum(reservationDto.getReserveNum())
+                .reservationStatus(ReservationStatus.STANDBY.getStatus())
                 .store(store)
                 .user(user)
                 .build();
@@ -52,9 +54,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         reservationDto.setStoreName(store.getStoreName());
         reservationDto.setReservationId(reservation.getId());
-        reservationDto.setReserveResult(
-                new ApiResponse(true,
-                        "예약을 완료하였습니다. 예약 시간 10분 내로 와주시길 바랍니다."));
+        reservationDto.setReserveResult(ReservationStatus.STANDBY.getStatus());
 
         return reservationDto;
     }

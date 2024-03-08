@@ -17,5 +17,5 @@ public class ReservationDto {
     private String storeName;
     private String reserveTime;
     private int reserveNum;
-    private ApiResponse reserveResult;
+    private String reserveResult;
 }
