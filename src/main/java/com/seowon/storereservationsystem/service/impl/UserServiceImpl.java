@@ -79,11 +79,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(LoginInput loginInput) {
-        userRepository.findByUserId(loginInput.getUserId())
+        userRepository.findByUserId(loginInput.getUsername())
                         .orElseThrow(() -> new ReservationSystemException(
                                 UNREGISTERED_USER
                         ));
-        userRepository.deleteByUserId(loginInput.getUserId());;
+        userRepository.deleteByUserId(loginInput.getUsername());;
     }
 
     @Override
