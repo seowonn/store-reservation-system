@@ -19,7 +19,7 @@ import java.util.Collections;
 @Builder
 @Getter
 public class User extends BaseEntity implements UserDetails {
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String userId;
 
     @Column(nullable = false)

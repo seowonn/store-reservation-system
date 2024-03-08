@@ -59,6 +59,13 @@ public class OwnerSecurityConfiguration {
                     authorizeRequests.
                             requestMatchers("/owner/**")
                             .hasRole(Role.OWNER.getRole());
+
+                    authorizeRequests
+                            .requestMatchers("/review/delete/**")
+                            .hasAnyRole(
+                                    Role.USER.getRole(),
+                                    Role.OWNER.getRole()
+                            );
                 })
                 .formLogin(formLogin -> formLogin
                         .loginPage("/owner/login")

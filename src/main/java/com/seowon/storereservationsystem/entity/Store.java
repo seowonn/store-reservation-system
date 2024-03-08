@@ -1,8 +1,11 @@
 package com.seowon.storereservationsystem.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -31,4 +34,9 @@ public class Store extends BaseEntity{
     @JoinColumn(name = "owner")
     @JsonBackReference
     private Owner owner;
+
+    @OneToMany(mappedBy = "store", fetch = FetchType.EAGER)
+    @ToString.Exclude
+    @JsonManagedReference
+    private List<Review> reviewList;
 }
