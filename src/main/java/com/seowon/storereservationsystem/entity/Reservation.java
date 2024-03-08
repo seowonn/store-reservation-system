@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Getter
@@ -33,4 +34,9 @@ public class Reservation extends BaseEntity{
     @JoinColumn(name = "user")
     @JsonBackReference
     private User user;
+
+    public String getReserveTimeTextFormat() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
+        return reserveTime.format(formatter);
+    }
 }
