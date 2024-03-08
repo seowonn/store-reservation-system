@@ -59,9 +59,17 @@ public class UserSecurityConfiguration {
                     authorizeRequests.
                             requestMatchers("/user/**").authenticated();
 
-                    authorizeRequests.
-                            requestMatchers("/user/**")
+                    authorizeRequests
+                            .requestMatchers("/user/**")
                             .hasRole(Role.USER.getRole());
+
+                    authorizeRequests
+                            .requestMatchers("/review/delete/**")
+                            .hasAnyRole(
+                                    Role.USER.getRole(),
+                                    Role.OWNER.getRole()
+                            );
+
                 })
                 .formLogin(formLogin -> formLogin
                         .loginPage("/user/login")

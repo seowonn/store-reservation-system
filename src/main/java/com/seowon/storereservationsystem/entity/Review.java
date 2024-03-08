@@ -1,10 +1,11 @@
 package com.seowon.storereservationsystem.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Getter
@@ -29,4 +30,14 @@ public class Review extends BaseEntity {
 
     @Column(length = 10000)
     private String content;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store")
+    @JsonBackReference
+    private Store store;
+
+    public String getVisitedAtTextFormat() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
+        return visitedAt.format(formatter);
+    }
 }

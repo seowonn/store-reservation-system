@@ -9,6 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class ReviewDto {
+    private Long reviewId;
     private String userName;
     private String reservedDt;
     private String storeName;
