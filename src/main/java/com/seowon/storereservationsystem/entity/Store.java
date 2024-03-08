@@ -36,7 +36,6 @@ public class Store extends BaseEntity{
     private Owner owner;
 
     @OneToMany(mappedBy = "store", fetch = FetchType.EAGER)
-    @JoinColumn(name = "review")
     @ToString.Exclude
     @JsonManagedReference
     private List<Review> reviewList;
