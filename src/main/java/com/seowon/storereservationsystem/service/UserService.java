@@ -10,4 +10,7 @@ public interface UserService {
     User getUserProfile(String userId);
     void updateUser(UserRegistrationDto registrationDto, String id);
     void deleteUser(LoginInput loginInput);
+
+    void resetUserPassword(Long id);
+    void sendSMS(String message);
 }

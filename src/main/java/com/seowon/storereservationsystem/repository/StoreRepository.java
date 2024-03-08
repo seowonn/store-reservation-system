@@ -18,5 +18,5 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     @Query("SELECT s.storeName FROM Store s WHERE s.owner.id = :ownerId")
     List<String> findStoreNamesByOwnerId(Long ownerId);
     Page<Store> findAll(Pageable pageable);
-    List<Store> findByStoreNameContaining(String storeName);
+    Page<Store> findByStoreNameContaining(String storeName, Pageable pageable);
 }

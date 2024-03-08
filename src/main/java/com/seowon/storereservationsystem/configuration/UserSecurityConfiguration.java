@@ -15,9 +15,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-//@Order(1)
-//@Configuration
-//@EnableWebSecurity
+@Order(1)
+@Configuration
+@EnableWebSecurity
 public class UserSecurityConfiguration {
 
 
@@ -44,6 +44,11 @@ public class UserSecurityConfiguration {
     public SecurityFilterChain userFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
+                .exceptionHandling(exceptionHandling ->
+                        exceptionHandling
+                                .authenticationEntryPoint(
+                                        new CustomAuthenticationEntryPoint())
+                )
                 .authorizeHttpRequests(authorizeRequests -> {
                     authorizeRequests
                             .requestMatchers("/user/register",

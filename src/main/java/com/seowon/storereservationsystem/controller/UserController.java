@@ -18,6 +18,7 @@ public class UserController {
 
     /**
      * 사용자의 회원가입
+     * userId(이메일)로 구분
      * @RequestBody registrationDto
      */
     @PostMapping("/register")
@@ -60,5 +61,15 @@ public class UserController {
             @RequestBody LoginInput loginInput) {
         userService.deleteUser(loginInput);
         return ResponseEntity.ok("회원 탈퇴를 완료하였습니다.");
+    }
+
+    /**
+     * 더 추가해볼 내용 : 사용자의 비밀번호 초기화 로직 (미완성)
+     * @PathVariable id
+     */
+    @GetMapping("/{id}/password/reset")
+    public ResponseEntity<?> resetUserPassword(@PathVariable Long id) {
+        userService.resetUserPassword(id);
+        return ResponseEntity.ok().build();
     }
 }
