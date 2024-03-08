@@ -59,7 +59,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .orElseThrow(() -> new ReservationSystemException(NO_REVIEW));
 
         if(!Objects.equals(review.getUserId(), userId)) {
-            throw new ReservationSystemException(UNAUTHORIZED_REVIEWER);
+            throw new ReservationSystemException(ACCESS_DENIED);
         }
         review.setContent(content);
 
@@ -93,11 +93,11 @@ public class ReviewServiceImpl implements ReviewService {
 
         if(isUser){
             if(!Objects.equals(review.getUserId(), username)){
-                throw new ReservationSystemException(UNAUTHORIZED_REVIEWER);
+                throw new ReservationSystemException(ACCESS_DENIED);
             }
         } else if (isOwner) {
             if(!Objects.equals(review.getStore().getOwner().getOwnerId(), username)){
-                throw new ReservationSystemException(UNAUTHORIZED_REVIEWER);
+                throw new ReservationSystemException(ACCESS_DENIED);
             }
         }
 

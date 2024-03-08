@@ -16,7 +16,7 @@ public enum ErrorCode {
     VISITED_UNCHECK("예약은 하였으나 방문 기록이 존재하지 않습니다."),
     EXPIRED_RESERVATION("예약 시간 내에 오지 않아 예약이 취소되었습니다. 다시 예약해주세요."),
     NO_REVIEW("작성된 리뷰내역이 없습니다."),
-    UNAUTHORIZED_REVIEWER("해당 리뷰에 대한 권한이 없는 사용자입니다."),
+    ACCESS_DENIED("해당 페이지에 대한 접근 권한이 없는 사용자입니다."),
     INVALID_SERVER_ERROR("내부 서버 오류가 발생하였습니다.");
 
     private final String description;
