@@ -1,8 +1,9 @@
-package com.seowon.storereservationsystem.service;
+package com.seowon.storereservationsystem.service.impl;
 
-import com.seowon.storereservationsystem.entity.User;
 import com.seowon.storereservationsystem.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,20 +16,23 @@ import java.util.Collection;
 import java.util.List;
 
 @Service
-public class UserDetailService implements UserDetailsService {
+@RequiredArgsConstructor
+public class UserDetailsServiceImpl implements UserDetailsService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final Logger LOGGER =
+            LoggerFactory.getLogger(UserDetailsServiceImpl.class);
+    private final UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username)
             throws UsernameNotFoundException {
-        User user = userRepository.findByUserId(username).orElseThrow(() ->
+        LOGGER.info(
+                "[loadUserByUsername] loadUserByUsername 수행. username : {}",
+                username
+        );
+        return userRepository.findByUserId(username).orElseThrow(() ->
                 new UsernameNotFoundException(
                         "User not found with username: " + username));
-
-        return new org.springframework.security.core.userdetails.User(
-                user.getUserId(), user.getPassword(), getAuthorities());
     }
 
     private Collection<? extends GrantedAuthority> getAuthorities() {
