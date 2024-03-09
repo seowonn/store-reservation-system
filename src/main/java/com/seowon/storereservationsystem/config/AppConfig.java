@@ -1,4 +1,4 @@
-package com.seowon.storereservationsystem.configuration;
+package com.seowon.storereservationsystem.config;
 
 import org.apache.commons.collections4.Trie;
 import org.apache.commons.collections4.trie.PatriciaTrie;
