@@ -5,4 +5,5 @@ import com.seowon.storereservationsystem.dto.LoginResponse;
 
 public interface AuthService {
     LoginResponse authenticateUser(LoginRequest loginRequest);
+    LoginResponse authenticateOwner(LoginRequest loginRequest);
 }

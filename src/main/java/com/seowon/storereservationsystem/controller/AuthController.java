@@ -28,6 +28,12 @@ public class AuthController {
         return ResponseEntity.ok(loginResponse);
     }
 
+    @PostMapping("/owner")
+    public ResponseEntity<?> authenticateOwner(@RequestBody LoginRequest loginRequest){
+        LoginResponse loginResponse = authService.authenticateOwner(loginRequest);
+        return ResponseEntity.ok(loginResponse);
+    }
+
     @GetMapping("/login-fail")
     public void LoginFail(HttpServletRequest request) {
         Object error =

@@ -67,13 +67,25 @@ public class JwtTokenProvider {
 
     public Authentication getAuthentication(String token) {
         LOGGER.info("[getAuthentication] 토큰 인증 정보 조회 시작");
+        List<String> roles = getRoleFromToken(token);
+
         UserDetails userDetails = userDetailsService
-                .loadUserByUsername(this.getUsername(token));
+                .loadUserByUsername(roles.get(0) + " " + this.getUsername(token));
 
         LOGGER.info("[getAuthentication] 토큰 인증 정보 조회 완료, UserDetails UserName : {}",
                 userDetails.getUsername());
         return new UsernamePasswordAuthenticationToken(userDetails, "",
                 userDetails.getAuthorities());
+    }
+
+    public List<String> getRoleFromToken(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.get("roles", List.class );
     }
 
     private String getUsername(String token) {

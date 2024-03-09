@@ -31,7 +31,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if ("/user/register".equals(requestURI) || "/api/auth/user".equals(requestURI)) {
             filterChain.doFilter(request, response);
             return;
-        } else if ("/owner/register".equals(requestURI) || "/api/auth/owner/login".equals(requestURI)) {
+        } else if ("/owner/register".equals(requestURI) || "/api/auth/owner".equals(requestURI)) {
             filterChain.doFilter(request, response);
             return;
         }
