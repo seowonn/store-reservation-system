@@ -1,6 +1,6 @@
 package com.seowon.storereservationsystem.service.impl;
 
-import com.seowon.storereservationsystem.dto.LoginInput;
+import com.seowon.storereservationsystem.dto.LoginRequest;
 import com.seowon.storereservationsystem.dto.UserRegistrationDto;
 import com.seowon.storereservationsystem.entity.User;
 import com.seowon.storereservationsystem.exception.ReservationSystemException;
@@ -78,12 +78,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(LoginInput loginInput) {
-        userRepository.findByUserId(loginInput.getUsername())
+    public void deleteUser(LoginRequest loginRequest) {
+        userRepository.findByUserId(loginRequest.getUsername())
                         .orElseThrow(() -> new ReservationSystemException(
                                 UNREGISTERED_USER
                         ));
-        userRepository.deleteByUserId(loginInput.getUsername());;
+        userRepository.deleteByUserId(loginRequest.getUsername());;
     }
 
     @Override
