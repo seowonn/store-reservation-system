@@ -14,5 +14,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     List<Reservation> findByUserUserIdAndReserveTime(String userId, LocalDateTime now);
     @Query("SELECT r FROM Reservation r WHERE r.user.userId = :userId AND r.checkIn = true")
     List<Reservation> findByUserUserIdAndCheckInTrue(String userId);
+    @Query("SELECT r FROM Reservation r WHERE r.store.id = :storeId ORDER BY r.reserveTime DESC")
     List<Reservation> findByStoreIdOrderByReserveTimeDesc(Long storeId);
 }
