@@ -1,10 +1,8 @@
 package com.seowon.storereservationsystem.service.impl;
 
-import com.seowon.storereservationsystem.dto.LoginInput;
+import com.seowon.storereservationsystem.dto.LoginRequest;
 import com.seowon.storereservationsystem.dto.OwnerRegistrationDto;
-import com.seowon.storereservationsystem.dto.UserRegistrationDto;
 import com.seowon.storereservationsystem.entity.Owner;
-import com.seowon.storereservationsystem.entity.User;
 import com.seowon.storereservationsystem.exception.ReservationSystemException;
 import com.seowon.storereservationsystem.repository.OwnerRepository;
 import com.seowon.storereservationsystem.service.OwnerService;
@@ -79,11 +77,11 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
-    public void deleteOwner(LoginInput loginInput) {
-        ownerRepository.findByOwnerId(loginInput.getUserId())
+    public void deleteOwner(LoginRequest loginRequest) {
+        ownerRepository.findByOwnerId(loginRequest.getUsername())
                         .orElseThrow(() -> new ReservationSystemException(
                                 UNREGISTERED_USER
                         ));
-        ownerRepository.deleteByOwnerId(loginInput.getUserId());;
+        ownerRepository.deleteByOwnerId(loginRequest.getUsername());;
     }
 }

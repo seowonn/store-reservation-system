@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import static com.seowon.storereservationsystem.type.ErrorCode.*;
 
@@ -30,6 +31,15 @@ public class ReservationServiceImpl implements ReservationService {
     private final UserRepository userRepository;
     @Override
     public ReservationDto applyReservation(Long storeId, ReservationDto reservationDto) {
+
+        List<Reservation> reservationList =
+                reservationRepository.findByUserUserIdOrOrderByReserveTime(
+                        reservationDto.getUserId());
+        if(!reservationList.isEmpty()){
+            if(LocalDateTime.now().isBefore(reservationList.get(0).getReserveTime().plusDays(1))){
+                throw new ReservationSystemException(ALREADY_RESERVED);
+            }
+        }
 
         User user = userRepository.findByUserId(reservationDto.getUserId())
                 .orElseThrow(() -> new ReservationSystemException(

@@ -1,6 +1,6 @@
 package com.seowon.storereservationsystem.controller;
 
-import com.seowon.storereservationsystem.dto.LoginInput;
+import com.seowon.storereservationsystem.dto.LoginRequest;
 import com.seowon.storereservationsystem.dto.UserRegistrationDto;
 import com.seowon.storereservationsystem.entity.User;
 import com.seowon.storereservationsystem.service.UserService;
@@ -58,8 +58,8 @@ public class UserController {
      */
     @DeleteMapping("/resign")
     public ResponseEntity<?> resign(
-            @RequestBody LoginInput loginInput) {
-        userService.deleteUser(loginInput);
+            @RequestBody LoginRequest loginRequest) {
+        userService.deleteUser(loginRequest);
         return ResponseEntity.ok("회원 탈퇴를 완료하였습니다.");
     }
 
