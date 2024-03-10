@@ -26,7 +26,7 @@ public class Reservation extends BaseEntity{
     private String reservationStatus;
 
     @Column
-    private boolean checkIn;
+    private boolean checkIn = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store")

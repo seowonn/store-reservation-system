@@ -1,6 +1,7 @@
 package com.seowon.storereservationsystem.controller;
 
 import com.seowon.storereservationsystem.dto.ApiResponse;
+import com.seowon.storereservationsystem.dto.ReservationStatusDto;
 import com.seowon.storereservationsystem.entity.Reservation;
 import com.seowon.storereservationsystem.service.OwnerReservationService;
 import com.seowon.storereservationsystem.type.ReservationStatus;
@@ -23,7 +24,7 @@ public class ReservationControllerForOwner {
      * @PathVariable ownerId
      * @PathVariable storeId
      */
-    @GetMapping("/{ownerId}/{storeId}/standby")
+    @GetMapping("/standby/{ownerId}/{storeId}")
     @PreAuthorize("hasAuthority('OWNER')")
     public ResponseEntity<?> getReservations(
             @PathVariable String ownerId, @PathVariable Long storeId){
@@ -41,7 +42,8 @@ public class ReservationControllerForOwner {
     @PreAuthorize("hasAuthority('OWNER')")
     public ResponseEntity<?> setReservationStatus(
             @PathVariable Long reservationId,
-            @RequestBody ReservationStatus status) {
+            @RequestBody ReservationStatusDto statusDto) {
+        ReservationStatus status = ReservationStatus.valueOf(statusDto.getStatus());
         ApiResponse apiResponse =
                 ownerReservationService.setReservationStatus(reservationId, status);
         return ResponseEntity.ok(apiResponse);
