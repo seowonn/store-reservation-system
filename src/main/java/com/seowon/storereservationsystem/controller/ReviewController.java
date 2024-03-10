@@ -5,6 +5,7 @@ import com.seowon.storereservationsystem.entity.Reservation;
 import com.seowon.storereservationsystem.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,6 +48,7 @@ public class ReviewController {
      * @RequestBody updateContent
      */
     @PatchMapping("/user/reviews/{userId}/{reviewId}")
+    @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<?> updateReviewContent(
             @PathVariable String userId,
             @PathVariable Long reviewId,

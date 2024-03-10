@@ -22,7 +22,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Owner extends BaseEntity implements UserDetails  {
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String ownerId;
 
     @Column(nullable = false)

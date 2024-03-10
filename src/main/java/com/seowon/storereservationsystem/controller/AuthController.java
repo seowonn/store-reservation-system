@@ -1,19 +1,39 @@
 package com.seowon.storereservationsystem.controller;
 
 import com.seowon.storereservationsystem.dto.ErrorResponseDto;
+import com.seowon.storereservationsystem.dto.LoginRequest;
+import com.seowon.storereservationsystem.dto.LoginResponse;
 import com.seowon.storereservationsystem.exception.ReservationSystemException;
+import com.seowon.storereservationsystem.service.AuthService;
 import com.seowon.storereservationsystem.type.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static com.seowon.storereservationsystem.type.ErrorCode.UNAUTHORIZED_USER;
 import static com.seowon.storereservationsystem.type.ErrorCode.UNREGISTERED_USER;
 
 @RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/auth")
 public class AuthController {
+
+    private final AuthService authService;
+
+    @PostMapping("/user")
+    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest){
+        LoginResponse loginResponse = authService.authenticateUser(loginRequest);
+        return ResponseEntity.ok(loginResponse);
+    }
+
+    @PostMapping("/owner")
+    public ResponseEntity<?> authenticateOwner(@RequestBody LoginRequest loginRequest){
+        LoginResponse loginResponse = authService.authenticateOwner(loginRequest);
+        return ResponseEntity.ok(loginResponse);
+    }
+
     @GetMapping("/login-fail")
     public void LoginFail(HttpServletRequest request) {
         Object error =
