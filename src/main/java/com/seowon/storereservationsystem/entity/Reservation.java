@@ -23,6 +23,9 @@ public class Reservation extends BaseEntity{
     private int reserveNum;
 
     @Column
+    private String reservationStatus;
+
+    @Column
     private boolean checkIn;
 
     @ManyToOne(fetch = FetchType.LAZY)

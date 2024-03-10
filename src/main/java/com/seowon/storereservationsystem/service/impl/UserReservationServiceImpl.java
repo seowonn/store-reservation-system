@@ -9,7 +9,8 @@ import com.seowon.storereservationsystem.exception.ReservationSystemException;
 import com.seowon.storereservationsystem.repository.ReservationRepository;
 import com.seowon.storereservationsystem.repository.StoreRepository;
 import com.seowon.storereservationsystem.repository.UserRepository;
-import com.seowon.storereservationsystem.service.ReservationService;
+import com.seowon.storereservationsystem.service.UserReservationService;
+import com.seowon.storereservationsystem.type.ReservationStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,19 +24,21 @@ import static com.seowon.storereservationsystem.type.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
-public class ReservationServiceImpl implements ReservationService {
+public class UserReservationServiceImpl implements UserReservationService {
 
     private final ReservationRepository reservationRepository;
     private final StoreRepository storeRepository;
     private final UserRepository userRepository;
     @Override
-    public ReservationDto makeReservation(Long storeId, ReservationDto reservationDto) {
-
+    public ReservationDto applyReservation(Long storeId, ReservationDto reservationDto) {
+        // 동일한 사용자가 같은 날짜에 대하여 예약을 또 했는지 확인
         List<Reservation> reservationList =
-                reservationRepository.findByUserUserIdOrOrderByReserveTime(
-                        reservationDto.getUserId());
+                reservationRepository.findByUserUserIdAndReserveTime(
+                        reservationDto.getUserId(), LocalDateTime.now());
+        // 같은 날짜 예약이여도 3시간 이상 간격이면 문제 X
         if(!reservationList.isEmpty()){
-            if(LocalDateTime.now().isBefore(reservationList.get(0).getReserveTime().plusDays(1))){
+            if(LocalDateTime.now().isBefore(
+                    reservationList.get(0).getReserveTime().plusHours(3))){
                 throw new ReservationSystemException(ALREADY_RESERVED);
             }
         }
@@ -54,6 +57,7 @@ public class ReservationServiceImpl implements ReservationService {
                 .reserveTime(convertStringToLocalDateTime(
                         reservationDto.getReserveTime()))
                 .reserveNum(reservationDto.getReserveNum())
+                .reservationStatus(ReservationStatus.STANDBY.getStatus())
                 .store(store)
                 .user(user)
                 .build();
@@ -62,9 +66,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         reservationDto.setStoreName(store.getStoreName());
         reservationDto.setReservationId(reservation.getId());
-        reservationDto.setReserveResult(
-                new ApiResponse(true,
-                        "예약을 완료하였습니다. 예약 시간 10분 내로 와주시길 바랍니다."));
+        reservationDto.setReserveResult(ReservationStatus.STANDBY.getStatus());
 
         return reservationDto;
     }
