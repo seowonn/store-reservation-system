@@ -2,7 +2,7 @@ package com.seowon.storereservationsystem.controller;
 
 import com.seowon.storereservationsystem.dto.ApiResponse;
 import com.seowon.storereservationsystem.dto.ReservationDto;
-import com.seowon.storereservationsystem.service.ReservationService;
+import com.seowon.storereservationsystem.service.UserReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -10,9 +10,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-public class ReservationController {
+@RequestMapping("/user/reservation")
+public class ReservationControllerForUser {
 
-    private final ReservationService reservationService;
+    private final UserReservationService userReservationService;
 
     /**
      * 사용자의 매장 예약 신청 서비스
@@ -20,7 +21,7 @@ public class ReservationController {
      * @RequestBody reservationDto
      * 예약 결과와 예약 번호(reservationId)를 수령하게 된다.
      */
-    @PostMapping("/user/apply-reservation/{storeId}")
+    @PostMapping("/apply/{storeId}")
     public ResponseEntity<ReservationDto> applyReservation(
             @PathVariable Long storeId,
             @RequestBody ReservationDto reservationDto
@@ -30,7 +31,7 @@ public class ReservationController {
                 .getName();
         reservationDto.setUserId(userId);
         ReservationDto result =
-                reservationService.applyReservation(storeId, reservationDto);
+                userReservationService.applyReservation(storeId, reservationDto);
         return ResponseEntity.ok(result);
     }
 
@@ -39,10 +40,10 @@ public class ReservationController {
      * 예약 시간 기준 10분 내외로만 확인 가능
      * @PathVariable reservationId
      */
-    @PostMapping("/user/reservation/{reservationId}/check-in")
+    @PostMapping("/{reservationId}/check-in")
     public ResponseEntity<?> reserveCheck(@PathVariable Long reservationId){
         ApiResponse apiResponse =
-                reservationService.checkReservation(reservationId);
+                userReservationService.checkReservation(reservationId);
         return ResponseEntity.ok(apiResponse);
     }
 }
