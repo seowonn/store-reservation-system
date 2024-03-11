@@ -59,12 +59,15 @@ public class ReviewController {
         return ResponseEntity.ok(reviewDto);
     }
 
+    /**
+     * 리뷰 삭제 기능
+     * @PathVariable reviewId
+     */
     @DeleteMapping("/review/delete/{reviewId}")
+    @PreAuthorize("hasAnyAuthority('USER', 'OWNER')")
     public ResponseEntity<?> deleteReview(@PathVariable Long reviewId) {
-        String userId =
-                SecurityContextHolder.getContext().getAuthentication().getName();
         reviewService.deleteReview(reviewId);
-        return null;
+        return ResponseEntity.ok().build();
     }
 
 }

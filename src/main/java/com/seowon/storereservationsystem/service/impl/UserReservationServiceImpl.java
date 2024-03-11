@@ -6,6 +6,7 @@ import com.seowon.storereservationsystem.entity.Reservation;
 import com.seowon.storereservationsystem.entity.Store;
 import com.seowon.storereservationsystem.entity.User;
 import com.seowon.storereservationsystem.exception.ReservationSystemException;
+import com.seowon.storereservationsystem.exception.UserNoticeException;
 import com.seowon.storereservationsystem.repository.ReservationRepository;
 import com.seowon.storereservationsystem.repository.StoreRepository;
 import com.seowon.storereservationsystem.repository.UserRepository;
@@ -31,15 +32,25 @@ public class UserReservationServiceImpl implements UserReservationService {
     private final UserRepository userRepository;
     @Override
     public ReservationDto applyReservation(Long storeId, ReservationDto reservationDto) {
+
+        // 예약 시간이 이미 지난(현재 대비 이전) 시간대인지 확인
+        if(convertStringToLocalDateTime(reservationDto.getReserveTime())
+                .isBefore(LocalDateTime.now())){
+            throw new ReservationSystemException(IMPOSSIBLE_RESERVE_TIME);
+        }
+
         // 동일한 사용자가 같은 날짜에 대하여 예약을 또 했는지 확인
         List<Reservation> reservationList =
                 reservationRepository.findByUserUserIdAndReserveTime(
                         reservationDto.getUserId(), LocalDateTime.now());
+
         // 같은 날짜 예약이여도 3시간 이상 간격이면 문제 X
         if(!reservationList.isEmpty()){
-            if(LocalDateTime.now().isBefore(
-                    reservationList.get(0).getReserveTime().plusHours(3))){
-                throw new ReservationSystemException(ALREADY_RESERVED);
+            for (Reservation reservation : reservationList) {
+                if(LocalDateTime.now().isBefore(
+                        reservation.getReserveTime().plusHours(3))){
+                    throw new ReservationSystemException(ALREADY_RESERVED);
+                }
             }
         }
 
@@ -73,14 +84,20 @@ public class UserReservationServiceImpl implements UserReservationService {
 
     @Override
     public ApiResponse checkReservation(Long reservationId) {
+        // 등록된 예약인지 확인
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new ReservationSystemException(
                         UNREGISTERED_RESERVATION
                 ));
 
-        if(LocalDateTime.now().isAfter(
-                reservation.getReserveTime().plusMinutes(10))){
-            throw new ReservationSystemException(EXPIRED_RESERVATION);
+        // 점장의 승인을 받은 예약인지 확인
+        if(!reservation.getReservationStatus().equals("승인")) {
+            throw new UserNoticeException(DENIED_RESERVATION);
+        }
+
+        // 예약 10분 전안으로 방문확인을 하러 왔는지 확인
+        if(LocalDateTime.now().isAfter(reservation.getReserveTime())){
+            throw new UserNoticeException(EXPIRED_RESERVATION);
         }
 
         if (LocalDateTime.now().isBefore(

@@ -33,6 +33,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public ReviewDto createReview(Long reservationId, ReviewDto reviewDto) {
+        // 해당 예약이 매장 방문 확인을 받은 내역인지 확인
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new ReservationSystemException(
                         VISITED_UNCHECK
@@ -76,6 +77,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public void deleteReview(Long reviewId) {
+        // 해당 리뷰의 작성자인지 / 매장 점주인지 확인
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ReservationSystemException(NO_REVIEW));
 
