@@ -36,6 +36,11 @@ public class Review extends BaseEntity {
     @JsonBackReference
     private Store store;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user")
+    @JsonBackReference
+    private User user;
+
     public String getVisitedAtTextFormat() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
         return visitedAt.format(formatter);

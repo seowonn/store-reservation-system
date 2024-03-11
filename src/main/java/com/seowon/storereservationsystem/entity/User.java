@@ -1,5 +1,6 @@
 package com.seowon.storereservationsystem.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.seowon.storereservationsystem.type.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -7,8 +8,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Entity
 @Setter
@@ -34,6 +37,18 @@ public class User extends BaseEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @ToString.Exclude
+    @Builder.Default
+    @JsonManagedReference
+    private List<Reservation> reservationList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @ToString.Exclude
+    @Builder.Default
+    @JsonManagedReference
+    private List<Review> resviewList = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

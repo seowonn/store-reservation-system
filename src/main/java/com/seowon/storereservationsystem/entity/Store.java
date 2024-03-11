@@ -39,4 +39,9 @@ public class Store extends BaseEntity{
     @ToString.Exclude
     @JsonManagedReference
     private List<Review> reviewList;
+
+    @OneToMany(mappedBy = "store", fetch = FetchType.EAGER)
+    @ToString.Exclude
+    @JsonManagedReference
+    private List<Reservation> reservationList;
 }

@@ -46,6 +46,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .visitedAt(reservation.getReserveTime())
                 .content(reviewDto.getContent())
                 .store(reservation.getStore())
+                .user(reservation.getUser())
                 .build();
         Review saved = reviewRepository.save(review);
 
