@@ -38,19 +38,11 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(authorizeRequests -> {
                     authorizeRequests
-                            .requestMatchers("/api/auth/**",
-                                    "/user/register", "/owner/register")
+                            .requestMatchers("/api/auth/**")
                             .permitAll();
 
                     authorizeRequests.
                             requestMatchers("/user/**", "/owner/**").authenticated();
-
-                    authorizeRequests
-                            .requestMatchers("/review/delete/**")
-                            .hasAnyRole(
-                                    Role.USER.getRole(),
-                                    Role.OWNER.getRole()
-                            );
                 })
                 .exceptionHandling(exceptionHandling ->
                         exceptionHandling
@@ -59,7 +51,6 @@ public class SecurityConfig {
                                 .accessDeniedHandler(
                                         new JwtAccessDeniedHandler())
                 )
-
                 .addFilterBefore(
                         new JwtAuthenticationFilter(jwtTokenProvider),
                         UsernamePasswordAuthenticationFilter.class

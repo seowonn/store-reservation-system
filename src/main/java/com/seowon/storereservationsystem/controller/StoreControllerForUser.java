@@ -1,7 +1,7 @@
 package com.seowon.storereservationsystem.controller;
 
 import com.seowon.storereservationsystem.entity.Store;
-import com.seowon.storereservationsystem.service.StoreService;
+import com.seowon.storereservationsystem.service.UserStoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +15,7 @@ import java.util.List;
 @RequestMapping("/user/store")
 public class StoreControllerForUser {
 
-    private final StoreService storeService;
+    private final UserStoreService userStoreService;
 
     /**
      * 매장명 검색을 통한 조회 기능
@@ -30,9 +30,9 @@ public class StoreControllerForUser {
             Pageable pageable){
         Page<Store> stores;
         if(keyword != null && !keyword.isEmpty()) {
-            stores = storeService.getStoresByStoreName(keyword, pageable);
+            stores = userStoreService.getStoresByStoreName(keyword, pageable);
         } else {
-            stores = storeService.getAllStores(pageable);
+            stores = userStoreService.getAllStores(pageable);
         }
 
         return ResponseEntity.ok(stores);
@@ -46,7 +46,7 @@ public class StoreControllerForUser {
      */
     @GetMapping("/{storeId}")
     public ResponseEntity<?> storeInfo(@PathVariable Long storeId){
-        Store store = storeService.getStoreInfo(storeId);
+        Store store = userStoreService.getStoreInfo(storeId);
         return ResponseEntity.ok(store);
     }
 
@@ -55,7 +55,7 @@ public class StoreControllerForUser {
      */
     @GetMapping("/autocomplete")
     public ResponseEntity<?> autocomplete(@RequestParam String keyword) {
-        List<String> autocomplete = storeService.autocomplete(keyword);
+        List<String> autocomplete = userStoreService.autocomplete(keyword);
         return ResponseEntity.ok(autocomplete);
     }
 }

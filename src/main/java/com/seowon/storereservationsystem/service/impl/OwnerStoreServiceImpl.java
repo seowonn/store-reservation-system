@@ -6,22 +6,20 @@ import com.seowon.storereservationsystem.entity.Store;
 import com.seowon.storereservationsystem.exception.ReservationSystemException;
 import com.seowon.storereservationsystem.repository.OwnerRepository;
 import com.seowon.storereservationsystem.repository.StoreRepository;
-import com.seowon.storereservationsystem.service.StoreService;
+import com.seowon.storereservationsystem.service.OwnerStoreService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.Trie;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.seowon.storereservationsystem.type.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
-public class StoreServiceImpl implements StoreService {
+public class OwnerStoreServiceImpl implements OwnerStoreService {
 
     private final StoreRepository storeRepository;
     private final OwnerRepository ownerRepository;
@@ -56,54 +54,48 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public List<String> selectOwnersStore(String ownerId) {
-        Owner owner = ownerRepository.findByOwnerId(ownerId)
-                .orElseThrow(() -> new ReservationSystemException(UNREGISTERED_USER));
-        return storeRepository
-                .findStoreNamesByOwnerId(owner.getId());
-    }
-
-    @Override
-    public Page<Store> getAllStores(Pageable pageable) {
-        return storeRepository.findAll(pageable);
-    }
-
-    @Override
-    public Page<Store> getStoresByStoreName(String storeName, Pageable pageable) {
-        Page<Store> storePage =
-                storeRepository.findByStoreNameContaining(storeName, pageable);
-        if(storePage.isEmpty()) {
-            throw new ReservationSystemException(UNREGISTERED_STORE);
-        }
-        return storePage;
-    }
-
-    @Override
     public void addAutocompleteKeyword(String keyword){
         trie.put(keyword, null);
     }
 
     @Override
-    public List<String> autocomplete(String prefix) {
-        return trie.prefixMap(prefix).keySet()
-                .stream()
-                .limit(10)
-                .map(Object::toString)
-                .collect(Collectors.toList());
+    public Page<Store> selectOwnersStore(String ownerId, Pageable pageable) {
+        Owner owner = ownerRepository.findByOwnerId(ownerId)
+                .orElseThrow(() -> new ReservationSystemException(UNREGISTERED_USER));
+
+        return storeRepository
+                .findAllByOwnerOwnerId(owner.getOwnerId(), pageable);
     }
 
     @Override
-    public void deleteAutocompleteKeyword(String keyword) {
-        trie.remove(keyword);
+    public Store updateStore(StoreRegistrationDto registrationDto, Long storeId) {
+        // Store 조회
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new ReservationSystemException(UNREGISTERED_STORE));
+
+        if(!store.getOwner().getOwnerId().equals(registrationDto.getOwnerId())) {
+            throw new ReservationSystemException(UNREGISTERED_USER);
+        }
+
+        store.setStoreName(registrationDto.getStoreName());
+        store.setSeatingCapacity(registrationDto.getSeatingCapacity());
+        store.setStorePhoneNumber(registrationDto.getStorePhoneNumber());
+        store.setStoreLocation(registrationDto.getStoreLocation());
+        store.setStoreDescription(registrationDto.getStoreDescription());
+
+        return storeRepository.save(store);
     }
 
     @Override
-    public Store getStoreInfo(Long storeId) {
-        return storeRepository.findById(storeId)
-                .orElseThrow(() ->
-                        new ReservationSystemException(
-                                UNREGISTERED_STORE
-                        ));
+    public void deleteStore(String ownerId, Long storeId) {
+        // 점주가 소유한 매장인지 확인
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new ReservationSystemException(UNREGISTERED_STORE));
+
+        if(!store.getOwner().getOwnerId().equals(ownerId)) {
+            throw new ReservationSystemException(ACCESS_DENIED);
+        }
+        storeRepository.deleteById(storeId);
     }
 
 }

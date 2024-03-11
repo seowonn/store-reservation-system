@@ -7,14 +7,10 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-public interface StoreService {
+public interface OwnerStoreService {
     Store registerStore(StoreRegistrationDto registrationDto);
-    List<String> selectOwnersStore(String ownerId);
-    Page<Store> getAllStores(Pageable pageable);
-    Page<Store> getStoresByStoreName(String storeName, Pageable pageable);
     void addAutocompleteKeyword(String keyword);
-    List<String> autocomplete(String prefix);
-    void deleteAutocompleteKeyword(String keyword);
-
-    Store getStoreInfo(Long storeId);
+    Page<Store> selectOwnersStore(String ownerId, Pageable pageable);
+    Store updateStore(StoreRegistrationDto registrationDto, Long storeId);
+    void deleteStore(String ownerId, Long storeId);
 }
