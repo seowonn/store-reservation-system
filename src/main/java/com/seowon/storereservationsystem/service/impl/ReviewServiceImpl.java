@@ -45,10 +45,12 @@ public class ReviewServiceImpl implements ReviewService {
                 .storeName(reservation.getStore().getStoreName())
                 .visitedAt(reservation.getReserveTime())
                 .content(reviewDto.getContent())
+                .store(reservation.getStore())
                 .build();
         Review saved = reviewRepository.save(review);
 
         reviewDto.setReservedDt(reservation.getReserveTimeTextFormat());
+        reviewDto.setStoreName(review.getStoreName());
         reviewDto.setReviewId(saved.getId());
 
         return reviewDto;
