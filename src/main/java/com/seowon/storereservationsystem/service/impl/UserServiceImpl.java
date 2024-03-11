@@ -24,32 +24,6 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public User register(UserRegistrationDto registrationDto) {
-        // 1. 이 회원이 이미 가입된 사람인지 확인
-        Optional<User> optionalUser =
-                userRepository.findByUserId(registrationDto.getUserId());
-
-        if(optionalUser.isPresent()) {
-            throw new ReservationSystemException(ALREADY_REGISTERED_USER);
-        }
-
-        // 2. password encoding 후 user 테이블에 저장
-        String encPassword =
-                BCrypt.hashpw(registrationDto.getPassword(), BCrypt.gensalt());
-
-        User user = User.builder()
-                .userId(registrationDto.getUserId())
-                .name(registrationDto.getName())
-                .phone(registrationDto.getPhone())
-                .password(encPassword)
-                .role(Role.USER)
-                .build();
-
-        // 3. 가입 성공한 User 객체 반환
-        return userRepository.save(user);
-    }
-
-    @Override
     public User getUserProfile(String userId) {
         User foundUser = userRepository.findByUserId(userId)
                 .orElseThrow(() ->

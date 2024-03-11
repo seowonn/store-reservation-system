@@ -1,8 +1,8 @@
 package com.seowon.storereservationsystem.controller;
 
-import com.seowon.storereservationsystem.dto.ErrorResponseDto;
-import com.seowon.storereservationsystem.dto.LoginRequest;
-import com.seowon.storereservationsystem.dto.LoginResponse;
+import com.seowon.storereservationsystem.dto.*;
+import com.seowon.storereservationsystem.entity.Owner;
+import com.seowon.storereservationsystem.entity.User;
 import com.seowon.storereservationsystem.exception.ReservationSystemException;
 import com.seowon.storereservationsystem.service.AuthService;
 import com.seowon.storereservationsystem.type.ErrorCode;
@@ -22,42 +22,47 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/user")
+    /**
+     * 사용자의 회원가입
+     * userId(이메일)로 구분
+     * @RequestBody registrationDto
+     */
+    @PostMapping("/user/register")
+    public ResponseEntity<?> register(
+            @RequestBody UserRegistrationDto registrationDto) {
+        User user = authService.registerUser(registrationDto);
+        return ResponseEntity.ok(user);
+    }
+
+    /**
+     * 사용자의 로그인
+     * @RequestBody loginRequest
+     */
+    @PostMapping("/user/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest){
         LoginResponse loginResponse = authService.authenticateUser(loginRequest);
         return ResponseEntity.ok(loginResponse);
     }
 
-    @PostMapping("/owner")
+    /**
+     * 점주의 회원가입
+     * ownerId(이메일)로 구분
+     * @RequestBody registrationDto
+     */
+    @PostMapping("/owner/register")
+    public ResponseEntity<?> register(
+            @RequestBody OwnerRegistrationDto registrationDto) {
+        Owner owner = authService.registerOwner(registrationDto);
+        return ResponseEntity.ok(owner);
+    }
+
+    /**
+     * 점주의 로그인
+     * @RequestBody loginRequest
+     */
+    @PostMapping("/owner/login")
     public ResponseEntity<?> authenticateOwner(@RequestBody LoginRequest loginRequest){
         LoginResponse loginResponse = authService.authenticateOwner(loginRequest);
         return ResponseEntity.ok(loginResponse);
-    }
-
-    @GetMapping("/login-fail")
-    public void LoginFail(HttpServletRequest request) {
-        Object error =
-                request.getSession().getAttribute("error");
-
-        if(error instanceof ErrorCode) {
-            throw new ReservationSystemException(((ErrorCode) error));
-        }
-    }
-
-    @GetMapping("/login-success")
-    public ResponseEntity<?> LoginSuccess() {
-        return ResponseEntity.ok("로그인에 성공하였습니다.");
-    }
-
-    @GetMapping("/logout-success")
-    public ResponseEntity<?>  LogoutSuccess() {
-        return ResponseEntity.ok("로그아웃에 성공하였습니다.");}
-
-    @GetMapping("/error")
-    public ResponseEntity<?> error() {
-        ErrorResponseDto responseDto =
-                new ErrorResponseDto(UNREGISTERED_USER,
-                        UNAUTHORIZED_USER.getDescription());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseDto);
     }
 }

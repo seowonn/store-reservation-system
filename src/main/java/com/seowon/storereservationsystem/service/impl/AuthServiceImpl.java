@@ -3,6 +3,8 @@ package com.seowon.storereservationsystem.service.impl;
 import com.seowon.storereservationsystem.config.security.JwtTokenProvider;
 import com.seowon.storereservationsystem.dto.LoginRequest;
 import com.seowon.storereservationsystem.dto.LoginResponse;
+import com.seowon.storereservationsystem.dto.OwnerRegistrationDto;
+import com.seowon.storereservationsystem.dto.UserRegistrationDto;
 import com.seowon.storereservationsystem.entity.Owner;
 import com.seowon.storereservationsystem.entity.User;
 import com.seowon.storereservationsystem.exception.ReservationSystemException;
@@ -11,13 +13,14 @@ import com.seowon.storereservationsystem.repository.UserRepository;
 import com.seowon.storereservationsystem.service.AuthService;
 import com.seowon.storereservationsystem.type.Role;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Optional;
 
-import static com.seowon.storereservationsystem.type.ErrorCode.UNMATCHED_PASSWORD;
-import static com.seowon.storereservationsystem.type.ErrorCode.UNREGISTERED_USER;
+import static com.seowon.storereservationsystem.type.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +29,32 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final OwnerRepository ownerRepository;
     private final JwtTokenProvider jwtTokenProvider;
+
+    @Override
+    public User registerUser(UserRegistrationDto registrationDto) {
+        // 1. 이 회원이 이미 가입된 사람인지 확인
+        Optional<User> optionalUser =
+                userRepository.findByUserId(registrationDto.getUserId());
+
+        if(optionalUser.isPresent()) {
+            throw new ReservationSystemException(ALREADY_REGISTERED_USER);
+        }
+
+        // 2. password encoding 후 user 테이블에 저장
+        String encPassword =
+                BCrypt.hashpw(registrationDto.getPassword(), BCrypt.gensalt());
+
+        User user = User.builder()
+                .userId(registrationDto.getUserId())
+                .name(registrationDto.getName())
+                .phone(registrationDto.getPhone())
+                .password(encPassword)
+                .role(Role.USER)
+                .build();
+
+        // 3. 가입 성공한 User 객체 반환
+        return userRepository.save(user);
+    }
 
     @Override
     public LoginResponse authenticateUser(LoginRequest loginRequest) {
@@ -50,6 +79,32 @@ public class AuthServiceImpl implements AuthService {
         return LoginResponse.builder()
                 .message("로그인에 성공하였습니다.")
                 .token(token).build();
+    }
+
+    @Override
+    public Owner registerOwner(OwnerRegistrationDto registrationDto) {
+        // 1. 이 회원이 이미 가입된 사람인지 확인
+        Optional<Owner> byOwnerId =
+                ownerRepository.findByOwnerId(registrationDto.getOwnerId());
+
+        if(byOwnerId.isPresent()){
+            throw new ReservationSystemException(ALREADY_REGISTERED_USER);
+        }
+
+        // 2. password encoding 후 owner 테이블에 저장
+        String encPassword =
+                BCrypt.hashpw(registrationDto.getPassword(), BCrypt.gensalt());
+
+        Owner owner = Owner.builder()
+                .ownerId(registrationDto.getOwnerId())
+                .name(registrationDto.getOwnerName())
+                .phone(registrationDto.getPhone())
+                .password(encPassword)
+                .role(Role.OWNER)
+                .build();
+
+        // 3. 가입 성공한 Owner 객체 반환
+        return ownerRepository.save(owner);
     }
 
     @Override

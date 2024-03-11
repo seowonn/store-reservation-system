@@ -17,18 +17,6 @@ public class UserController {
     private final UserService userService;
 
     /**
-     * 사용자의 회원가입
-     * userId(이메일)로 구분
-     * @RequestBody registrationDto
-     */
-    @PostMapping("/register")
-    public ResponseEntity<?> register(
-            @RequestBody UserRegistrationDto registrationDto) {
-        User user = userService.register(registrationDto);
-        return ResponseEntity.ok(user);
-    }
-
-    /**
      * 사용자의 개인 정보 조회
      */
     @GetMapping("/profile")

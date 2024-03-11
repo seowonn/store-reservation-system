@@ -14,19 +14,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/owner")
 public class OwnerController {
-    private final OwnerService ownerService;
 
-    /**
-     * 점주의 회원가입
-     * ownerId(이메일)로 구분
-     * @RequestBody registrationDto
-     */
-    @PostMapping("/register")
-    public ResponseEntity<?> register(
-            @RequestBody OwnerRegistrationDto registrationDto) {
-        Owner owner = ownerService.register(registrationDto);
-        return ResponseEntity.ok(owner);
-    }
+    private final OwnerService ownerService;
 
     /**
      * 점주의 개인 정보 조회
