@@ -28,11 +28,13 @@ public class EmailServiceImpl implements EmailService {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
         try{
+            LOGGER.info("[sendReservationStatusMail] 이메일 생성 시작");
             MimeMessageHelper mimeMessageHelper =
                     new MimeMessageHelper(mimeMessage, false, "utf-8");
             mimeMessageHelper.setTo(emailMessage.getTo());
             mimeMessageHelper.setSubject(emailMessage.getSubject());
             mimeMessageHelper.setText(emailMessage.getMessage());
+            LOGGER.info("[sendReservationStatusMail] 이메일 생성 완료");
             javaMailSender.send(mimeMessage);
             LOGGER.info("[sendReservationStatusMail] 이메일을 성공적으로 전송함");
 

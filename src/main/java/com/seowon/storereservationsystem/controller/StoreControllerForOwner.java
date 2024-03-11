@@ -20,7 +20,6 @@ public class StoreControllerForOwner {
 
     /**
      * 점주의 매장 생성
-     *
      * @RequestBody registrationDto
      */
     @PostMapping("/add")
