@@ -18,8 +18,7 @@ import java.util.Map;
 
 import static com.seowon.storereservationsystem.type.ErrorCode.ACCESS_DENIED;
 import static com.seowon.storereservationsystem.type.ErrorCode.INVALID_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.*;
 
 @Slf4j
 @RestControllerAdvice
@@ -32,6 +31,14 @@ public class GlobalExceptionHandler {
         ErrorResponseDto errorResponseDto =
                 new ErrorResponseDto(e.getErrorCode(), e.getErrorMessage());
         return new ResponseEntity<>(errorResponseDto, BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UserNoticeException.class)
+    public ResponseEntity<ErrorResponseDto> handleUserNoticeException(ReservationSystemException e) {
+        LOGGER.error("[UserNoticeException] : {}", e.getErrorCode());
+        ErrorResponseDto errorResponseDto =
+                new ErrorResponseDto(e.getErrorCode(), e.getErrorMessage());
+        return new ResponseEntity<>(errorResponseDto, OK);
     }
 
     @ExceptionHandler(AccessDeniedException.class)

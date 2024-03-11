@@ -1,5 +1,6 @@
 package com.seowon.storereservationsystem.controller;
 
+import com.seowon.storereservationsystem.dto.ApiResponse;
 import com.seowon.storereservationsystem.dto.ReviewDto;
 import com.seowon.storereservationsystem.entity.Reservation;
 import com.seowon.storereservationsystem.service.ReviewService;
@@ -59,12 +60,19 @@ public class ReviewController {
         return ResponseEntity.ok(reviewDto);
     }
 
+    /**
+     * 리뷰 삭제 기능
+     * @PathVariable reviewId
+     */
     @DeleteMapping("/review/delete/{reviewId}")
+    @PreAuthorize("hasAnyAuthority('USER', 'OWNER')")
     public ResponseEntity<?> deleteReview(@PathVariable Long reviewId) {
-        String userId =
-                SecurityContextHolder.getContext().getAuthentication().getName();
         reviewService.deleteReview(reviewId);
-        return null;
+        ApiResponse apiResponse = ApiResponse.builder()
+                .success(true)
+                .message("리뷰를 성공적으로 삭제하였습니다.")
+                .build();
+        return ResponseEntity.ok(apiResponse);
     }
 
 }

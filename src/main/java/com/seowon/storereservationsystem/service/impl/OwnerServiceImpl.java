@@ -23,32 +23,6 @@ public class OwnerServiceImpl implements OwnerService {
     private final OwnerRepository ownerRepository;
 
     @Override
-    public Owner register(OwnerRegistrationDto registrationDto) {
-        // 1. 이 회원이 이미 가입된 사람인지 확인
-        Optional<Owner> byOwnerId =
-                ownerRepository.findByOwnerId(registrationDto.getOwnerId());
-
-        if(byOwnerId.isPresent()){
-            throw new ReservationSystemException(ALREADY_REGISTERED_USER);
-        }
-
-        // 2. password encoding 후 owner 테이블에 저장
-        String encPassword =
-                BCrypt.hashpw(registrationDto.getPassword(), BCrypt.gensalt());
-
-        Owner owner = Owner.builder()
-                .ownerId(registrationDto.getOwnerId())
-                .name(registrationDto.getOwnerName())
-                .phone(registrationDto.getPhone())
-                .password(encPassword)
-                .role(Role.OWNER)
-                .build();
-
-        // 3. 가입 성공한 Owner 객체 반환
-        return ownerRepository.save(owner);
-    }
-
-    @Override
     public Owner getOwnerProfile(String ownerId) {
         Owner foundOwner = ownerRepository.findByOwnerId(ownerId)
                 .orElseThrow(() ->
