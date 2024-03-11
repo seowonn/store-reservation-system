@@ -29,7 +29,6 @@ public class JwtTokenProvider {
 
     private static final long TOKEN_EXPIRE_TIME = 1000 * 60 * 60; // 1 hour
     private static final String KEY_ROLES = "roles";
-    private static final String AUTHORITIES_KEY = "auth";
     private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
     @Value("${spring.jwt.secret}")

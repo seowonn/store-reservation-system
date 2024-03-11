@@ -1,12 +1,14 @@
 package com.seowon.storereservationsystem.service.impl;
 
 import com.seowon.storereservationsystem.dto.ApiResponse;
+import com.seowon.storereservationsystem.dto.EmailMessage;
 import com.seowon.storereservationsystem.entity.Reservation;
 import com.seowon.storereservationsystem.entity.Store;
 import com.seowon.storereservationsystem.exception.ReservationSystemException;
 import com.seowon.storereservationsystem.repository.OwnerRepository;
 import com.seowon.storereservationsystem.repository.ReservationRepository;
 import com.seowon.storereservationsystem.repository.StoreRepository;
+import com.seowon.storereservationsystem.service.EmailService;
 import com.seowon.storereservationsystem.service.OwnerReservationService;
 import com.seowon.storereservationsystem.type.ReservationStatus;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class OwnerReservationServiceImpl implements OwnerReservationService {
     private final ReservationRepository reservationRepository;
     private final StoreRepository storeRepository;
     private final OwnerRepository ownerRepository;
+    private final EmailService emailService;
 
     @Override
     public List<Reservation> getStandByReservations(String ownerId, Long storeId) {
@@ -53,7 +56,7 @@ public class OwnerReservationServiceImpl implements OwnerReservationService {
 
     /**
      * 점장은 대기 상태인 예약들을 승인 또는 거절로 상태 변경할 수 있다.
-     * TODO : 승인, 거절에 대한 알림을 사용자에게 전달해야 함.
+     * 승인, 거절에 대한 알림을 사용자에게 이메일로 전달
      */
     @Override
     public ApiResponse setReservationStatus(Long reservationId, ReservationStatus status) {
@@ -63,11 +66,16 @@ public class OwnerReservationServiceImpl implements OwnerReservationService {
 
         reservation.setReservationStatus(status.getStatus());
 
+        EmailMessage emailMessage = EmailMessage.builder()
+                .to(reservation.getUser().getUserId())
+                .message("매장 예약 : " + status.getStatus())
+                .subject(reservation.getStore().getId().toString())
+                .build();
+
+        ApiResponse apiResponse = emailService.sendReservationStatusMail(emailMessage);
+
         reservationRepository.save(reservation);
 
-        return ApiResponse.builder()
-                .success(true)
-                .message("예약 상태 변경을 완료하였습니다.")
-                .build();
+        return apiResponse;
     }
 }

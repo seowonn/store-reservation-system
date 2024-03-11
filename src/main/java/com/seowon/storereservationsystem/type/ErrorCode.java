@@ -18,6 +18,7 @@ public enum ErrorCode {
     NO_REVIEW("작성된 리뷰내역이 없습니다."),
     ACCESS_DENIED("해당 페이지에 대한 접근 권한이 없는 사용자입니다."),
     ALREADY_RESERVED("이미 예약을 진행하였습니다. 다시 예약 시 이전 예약을 취소하고 이용해주세요."),
+    SEND_EMAIL_ERROR("이메일 전송 과정 중 문제가 발생하였습니다. 다시 전송해주세요."),
     INVALID_SERVER_ERROR("내부 서버 오류가 발생하였습니다.");
 
     private final String description;
