@@ -72,13 +72,17 @@ public class AuthServiceImpl implements AuthService {
         }
 
         // 3. 인증된 사용자에 대한 JWT 토큰을 생성
-        String token =
-                jwtTokenProvider.createToken(loginRequest.getUsername(),
+        String accessToken =
+                jwtTokenProvider.createAccessToken(loginRequest.getUsername(),
+                        Collections.singletonList(Role.USER.getRole()));
+        String refreshToken =
+                jwtTokenProvider.createRefreshToken(loginRequest.getUsername(),
                         Collections.singletonList(Role.USER.getRole()));
 
         return LoginResponse.builder()
                 .message("로그인에 성공하였습니다.")
-                .token(token).build();
+                .accessToken(accessToken)
+                .refreshToken(refreshToken).build();
     }
 
     @Override
@@ -123,13 +127,18 @@ public class AuthServiceImpl implements AuthService {
         }
 
         // 3. 인증된 사용자에 대한 JWT 토큰을 생성
-        String token =
-                jwtTokenProvider.createToken(loginRequest.getUsername(),
+        String accessToken =
+                jwtTokenProvider.createAccessToken(loginRequest.getUsername(),
+                        Collections.singletonList(Role.OWNER.getRole()));
+
+        String refreshToken =
+                jwtTokenProvider.createRefreshToken(loginRequest.getUsername(),
                         Collections.singletonList(Role.OWNER.getRole()));
 
         return LoginResponse.builder()
                 .message("로그인에 성공하였습니다.")
-                .token(token).build();
+                .accessToken(accessToken)
+                .refreshToken(refreshToken).build();
     }
 
 }
