@@ -35,7 +35,8 @@ public class Store extends BaseEntity{
     @JsonBackReference
     private Owner owner;
 
-    @OneToMany(mappedBy = "store", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "store", fetch = FetchType.EAGER,
+            cascade = {CascadeType.REFRESH, CascadeType.REMOVE})
     @ToString.Exclude
     @JsonManagedReference
     private List<Review> reviewList;

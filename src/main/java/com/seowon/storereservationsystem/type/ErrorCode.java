@@ -17,6 +17,7 @@ public enum ErrorCode {
     EXPIRED_RESERVATION("예약 시간 내에 오지 않아 예약이 취소되었습니다. 다시 예약해주세요."),
     DENIED_RESERVATION("승인되지 않은 예약입니다. 다시 예약해주세요."),
     NO_REVIEW("작성된 리뷰내역이 없습니다."),
+    REVIEW_EXIST("작성된 리뷰 내역이 존재합니다."),
     ACCESS_DENIED("해당 페이지에 대한 접근 권한이 없는 사용자입니다."),
     ALREADY_RESERVED("이미 예약을 진행하였습니다. 다시 예약 시 이전 예약을 취소하고 이용해주세요."),
     IMPOSSIBLE_RESERVE_TIME("해당 시간대로 예약을 진행할 수 없습니다."),

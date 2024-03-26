@@ -39,7 +39,7 @@ public class Owner extends BaseEntity implements UserDetails  {
     private Role role;
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL)
+            cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @ToString.Exclude
     @Builder.Default
     @JsonManagedReference
