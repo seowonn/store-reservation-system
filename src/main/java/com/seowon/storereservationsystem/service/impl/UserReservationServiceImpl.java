@@ -13,6 +13,7 @@ import com.seowon.storereservationsystem.repository.UserRepository;
 import com.seowon.storereservationsystem.service.UserReservationService;
 import com.seowon.storereservationsystem.type.ReservationStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -111,6 +112,29 @@ public class UserReservationServiceImpl implements UserReservationService {
         reservationRepository.save(reservation);
 
         return new ApiResponse(true, "방문 확인되었습니다.");
+    }
+
+    @Override
+    public ApiResponse cancelReservation(Long reservationId) {
+
+        // 로그인한 사용자의 아이디랑 입력으로 받은 예약 아이디를 비교
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() ->
+                        new ReservationSystemException(UNMATCHED_URL_INFO));
+
+        String loginId =
+                SecurityContextHolder.getContext().getAuthentication().getName();
+
+        if(!loginId.equals(reservation.getUser().getUserId())) {
+            throw new ReservationSystemException(UNREGISTERED_RESERVATION);
+        }
+
+        reservationRepository.delete(reservation);
+
+        return ApiResponse.builder()
+                .success(true)
+                .message("예약을 성공적으로 취소 하였습니다.")
+                .build();
     }
 
     /**

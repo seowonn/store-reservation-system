@@ -46,4 +46,11 @@ public class ReservationControllerForUser {
                 userReservationService.checkReservation(reservationId);
         return ResponseEntity.ok(apiResponse);
     }
+
+    @DeleteMapping("/{reservationId}/cancel")
+    public ResponseEntity<?> cancelReservation(@PathVariable Long reservationId){
+        ApiResponse apiResponse =
+                userReservationService.cancelReservation(reservationId);
+        return ResponseEntity.ok(apiResponse);
+    }
 }
