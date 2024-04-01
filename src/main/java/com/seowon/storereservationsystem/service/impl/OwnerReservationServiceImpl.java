@@ -47,7 +47,7 @@ public class OwnerReservationServiceImpl implements OwnerReservationService {
         List<Reservation> list =
                 reservationRepository.findByStoreIdOrderByReserveTimeDesc(storeId);
         for (Reservation reservation : list) {
-            if(reservation.getReservationStatus().equals("대기")){
+            if(reservation.getReservationStatus().equals(ReservationStatus.STANDBY.toString())){
                 standByReservations.add(reservation);
             }
         }
@@ -59,16 +59,27 @@ public class OwnerReservationServiceImpl implements OwnerReservationService {
      * 승인, 거절에 대한 알림을 사용자에게 이메일로 전달
      */
     @Override
-    public ApiResponse setReservationStatus(Long reservationId, ReservationStatus status) {
+    public ApiResponse setReservationStatus(Long reservationId, String status) {
 
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new ReservationSystemException(UNREGISTERED_RESERVATION));
 
-        reservation.setReservationStatus(status.getStatus());
+        // 예약을 한, "대기" 상태의 예약인지 확인해야 한다.
+        if(!reservation.getReservationStatus().equals(ReservationStatus.STANDBY.toString())){
+            throw new ReservationSystemException(UNREGISTERED_RESERVATION);
+        }
+
+        // 예약이 이미 "승인/거절" 상태라면 예외로 처리한다.
+        if(reservation.getReservationStatus().equals(ReservationStatus.APPROVED.toString())
+                || reservation.getReservationStatus().equals(ReservationStatus.REJECTED.toString())){
+            throw new ReservationSystemException(ALREADY_PROCESSED);
+        }
+
+        reservation.setReservationStatus(status);
 
         EmailMessage emailMessage = EmailMessage.builder()
                 .to(reservation.getUser().getUserId())
-                .message("매장 예약 : " + status.getStatus())
+                .message("매장 예약 : " + status)
                 .subject(reservation.getStore().getId().toString())
                 .build();
 

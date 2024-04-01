@@ -14,6 +14,7 @@ public enum ErrorCode {
     ALREADY_REGISTERED_STORE("이미 등록된 매장입니다."),
     UNREGISTERED_STORE("존재하지 않는 매장입니다."),
     UNREGISTERED_RESERVATION("예약 내역이 존재하지 않습니다."),
+    ALREADY_PROCESSED("이미 처리된 예약 내역입니다."),
     VISITED_UNCHECK("예약은 하였으나 방문 기록이 존재하지 않습니다."),
     EXPIRED_RESERVATION("예약 시간 내에 오지 않아 예약이 취소되었습니다. 다시 예약해주세요."),
     DENIED_RESERVATION("승인되지 않은 예약입니다. 다시 예약해주세요."),

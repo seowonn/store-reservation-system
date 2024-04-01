@@ -69,7 +69,7 @@ public class UserReservationServiceImpl implements UserReservationService {
                 .reserveTime(convertStringToLocalDateTime(
                         reservationDto.getReserveTime()))
                 .reserveNum(reservationDto.getReserveNum())
-                .reservationStatus(ReservationStatus.STANDBY.getStatus())
+                .reservationStatus(ReservationStatus.STANDBY.toString())
                 .store(store)
                 .user(user)
                 .build();
@@ -78,7 +78,7 @@ public class UserReservationServiceImpl implements UserReservationService {
 
         reservationDto.setStoreName(store.getStoreName());
         reservationDto.setReservationId(reservation.getId());
-        reservationDto.setReserveResult(ReservationStatus.STANDBY.getStatus());
+        reservationDto.setReserveResult(ReservationStatus.STANDBY.toString());
 
         return reservationDto;
     }
@@ -92,7 +92,7 @@ public class UserReservationServiceImpl implements UserReservationService {
                 ));
 
         // 점장의 승인을 받은 예약인지 확인
-        if(!reservation.getReservationStatus().equals("승인")) {
+        if(!reservation.getReservationStatus().equals(ReservationStatus.APPROVED.toString())) {
             throw new UserNoticeException(DENIED_RESERVATION);
         }
 

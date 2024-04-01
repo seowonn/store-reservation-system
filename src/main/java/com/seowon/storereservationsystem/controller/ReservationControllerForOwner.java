@@ -43,7 +43,7 @@ public class ReservationControllerForOwner {
     public ResponseEntity<?> setReservationStatus(
             @PathVariable Long reservationId,
             @RequestBody ReservationStatusDto statusDto) {
-        ReservationStatus status = ReservationStatus.valueOf(statusDto.getStatus());
+        String status = statusDto.getStatus();
         ApiResponse apiResponse =
                 ownerReservationService.setReservationStatus(reservationId, status);
         return ResponseEntity.ok(apiResponse);
