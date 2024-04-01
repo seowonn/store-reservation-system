@@ -36,8 +36,9 @@ public class Review extends BaseEntity {
     @JsonBackReference
     private Store store;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user")
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user", nullable = true,
+            foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
     @JsonBackReference
     private User user;
 

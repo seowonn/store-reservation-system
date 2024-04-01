@@ -5,9 +5,6 @@ spring:
     username: root
     password: seowon
 
-  jwt:
-    secret: flature!@#
-
   jpa:
     hibernate:
       ddl-auto: update

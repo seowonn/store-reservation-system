@@ -4,24 +4,27 @@ import com.seowon.storereservationsystem.dto.LoginRequest;
 import com.seowon.storereservationsystem.dto.UserRegistrationDto;
 import com.seowon.storereservationsystem.entity.User;
 import com.seowon.storereservationsystem.exception.ReservationSystemException;
+import com.seowon.storereservationsystem.repository.ReservationRepository;
+import com.seowon.storereservationsystem.repository.ReviewRepository;
 import com.seowon.storereservationsystem.repository.UserRepository;
 import com.seowon.storereservationsystem.service.UserService;
-import com.seowon.storereservationsystem.type.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.UUID;
 
-import static com.seowon.storereservationsystem.type.ErrorCode.*;
+import static com.seowon.storereservationsystem.type.ErrorCode.REVIEW_EXIST;
+import static com.seowon.storereservationsystem.type.ErrorCode.UNREGISTERED_USER;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final ReviewRepository reviewRepository;
+    private final ReservationRepository reservationRepository;
 
     @Override
     public User getUserProfile(String userId) {
@@ -53,10 +56,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(LoginRequest loginRequest) {
-        userRepository.findByUserId(loginRequest.getUsername())
-                        .orElseThrow(() -> new ReservationSystemException(
-                                UNREGISTERED_USER
-                        ));
+        User user = userRepository.findByUserId(loginRequest.getUsername())
+                .orElseThrow(() -> new ReservationSystemException(
+                        UNREGISTERED_USER
+                ));
+
+        Long reviewCnt = reviewRepository.countByUser(user);
+        if(reviewCnt> 0) {
+            throw new ReservationSystemException(REVIEW_EXIST);
+        }
+
         userRepository.deleteByUserId(loginRequest.getUsername());;
     }
 

@@ -1,6 +1,7 @@
 package com.seowon.storereservationsystem.repository;
 
 import com.seowon.storereservationsystem.entity.Reservation;
+import com.seowon.storereservationsystem.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -16,4 +17,5 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     List<Reservation> findByUserUserIdAndCheckInTrue(String userId);
     @Query("SELECT r FROM Reservation r WHERE r.store.id = :storeId ORDER BY r.reserveTime DESC")
     List<Reservation> findByStoreIdOrderByReserveTimeDesc(Long storeId);
+    Long countByUser(User user);
 }

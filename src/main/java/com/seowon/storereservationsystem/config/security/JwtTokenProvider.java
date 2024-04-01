@@ -27,41 +27,50 @@ public class JwtTokenProvider {
     private final Logger LOGGER = LoggerFactory.getLogger(JwtTokenProvider.class);
     private final UserDetailsService userDetailsService;
 
-    private static final long TOKEN_EXPIRE_TIME = 1000 * 60 * 60; // 1 hour
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60; // 1 hour
+    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 1 week
     private static final String KEY_ROLES = "roles";
     private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
-
-    @Value("${spring.jwt.secret}")
-    private String secretKey = "secretKey";
-
-    @PostConstruct
-    protected void init() {
-        LOGGER.info("[init] JwtTokenProvider 내 secretKey 초기화 시작");
-        secretKey = Base64.getEncoder()
-                .encodeToString(secretKey.getBytes(StandardCharsets.UTF_8));
-        LOGGER.info("[init] JwtTokenProvider 내 secretKey 초기화 완료");
-    }
 
     /**
      * 토큰 생성 (발급)
      */
-    public String createToken(String username, List<String> roles){
-        LOGGER.info("[createToken] 토큰 생성 시작");
+    public String createAccessToken(String username, List<String> roles){
+        LOGGER.info("[createAccessToken] 토큰 생성 시작");
         Claims claims = Jwts.claims().setSubject(username);
         claims.put(KEY_ROLES, roles);
 
         Date now = new Date();
-        Date expiredDate = new Date(now.getTime() + TOKEN_EXPIRE_TIME);
+        Date expiredDate = new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_TIME);
 
-        String token = Jwts.builder()
+        String accessToken = Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(expiredDate)
                 .signWith(key)
                 .compact();
 
-        LOGGER.info("[createToken] 토큰 생성 완료");
-        return token;
+        LOGGER.info("[createAccessToken] 토큰 생성 완료");
+        return accessToken;
+    }
+
+    public String createRefreshToken(String username, List<String> roles){
+        LOGGER.info("[createRefreshToken] 토큰 생성 시작");
+        Claims claims = Jwts.claims().setSubject(username);
+        claims.put(KEY_ROLES, roles);
+
+        Date now = new Date();
+        Date expiredDate = new Date(now.getTime() + REFRESH_TOKEN_EXPIRE_TIME);
+
+        String refreshToken = Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(expiredDate)
+                .signWith(key)
+                .compact();
+
+        LOGGER.info("[createRefreshToken] 토큰 생성 완료");
+        return refreshToken;
     }
 
     public Authentication getAuthentication(String token) {

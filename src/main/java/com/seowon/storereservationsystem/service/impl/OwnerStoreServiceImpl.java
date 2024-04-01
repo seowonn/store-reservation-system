@@ -11,8 +11,10 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.Trie;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.seowon.storereservationsystem.type.ErrorCode.*;
@@ -27,8 +29,12 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
 
     @Override
     public Store registerStore(StoreRegistrationDto registrationDto) {
+
+        // 점주의 로그인 정보에서 아이디 추출
+        String checkedLoginId = checkLoginId(registrationDto.getOwnerId());
+
         // Owner 조회
-        Owner owner = ownerRepository.findByOwnerId(registrationDto.getOwnerId())
+        Owner owner = ownerRepository.findByOwnerId(checkedLoginId)
                 .orElseThrow(() ->
                         new ReservationSystemException(UNREGISTERED_USER)
                 );
@@ -59,21 +65,31 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
     }
 
     @Override
-    public Page<Store> selectOwnersStore(String ownerId, Pageable pageable) {
-        Owner owner = ownerRepository.findByOwnerId(ownerId)
+    public Page<Store> selectOwnersStore(String urlOwnerId, Pageable pageable) {
+
+        // 점주의 로그인 정보에서 아이디 추출
+        String loginOwnerId = checkLoginId(urlOwnerId);
+
+        // 점주 회원 존재 유무 판단
+        ownerRepository.findByOwnerId(loginOwnerId)
                 .orElseThrow(() -> new ReservationSystemException(UNREGISTERED_USER));
 
         return storeRepository
-                .findAllByOwnerOwnerId(owner.getOwnerId(), pageable);
+                .findAllByOwnerOwnerId(loginOwnerId, pageable);
     }
 
     @Override
     public Store updateStore(StoreRegistrationDto registrationDto, Long storeId) {
+
+        // 점주의 로그인 정보에서 아이디 추출
+        String checkedLoginId = checkLoginId(registrationDto.getOwnerId());
+
         // Store 조회
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new ReservationSystemException(UNREGISTERED_STORE));
 
-        if(!store.getOwner().getOwnerId().equals(registrationDto.getOwnerId())) {
+        // 조회된 매장의 점주 아이디와 로그인한 아이디 정보가 일치하는지 확인한다.
+        if(!store.getOwner().getOwnerId().equals(checkedLoginId)) {
             throw new ReservationSystemException(UNREGISTERED_USER);
         }
 
@@ -88,14 +104,30 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
 
     @Override
     public void deleteStore(String ownerId, Long storeId) {
+
+        String checkedLoginId = checkLoginId(ownerId);
+
         // 점주가 소유한 매장인지 확인
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new ReservationSystemException(UNREGISTERED_STORE));
 
-        if(!store.getOwner().getOwnerId().equals(ownerId)) {
+        if(!store.getOwner().getOwnerId().equals(checkedLoginId)) {
             throw new ReservationSystemException(ACCESS_DENIED);
         }
         storeRepository.deleteById(storeId);
+    }
+
+    private static String checkLoginId(String ownerId) {
+
+        // 점주의 로그인 정보에서 아이디 추출
+        String checkedLoginId =
+                SecurityContextHolder.getContext().getAuthentication().getName();
+
+        if(!checkedLoginId.equals(ownerId)){
+            throw new ReservationSystemException(UNMATCHED_URL_INFO);
+        }
+
+        return checkedLoginId;
     }
 
 }
